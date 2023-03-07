@@ -8,8 +8,9 @@ library(here)
 library(mapview)
 library(sf)
 library(leaflet)
-install.packages("rio")
+#install.packages("rio")
 library(rio)
+#install.packages("ggspatial")
 library(ggspatial)
 
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
@@ -96,7 +97,7 @@ server <- function(input, output) {
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
   
-  output$coral_map <- plotOutput(coral_map)
+  output$coral_map <- renderPlot(plotOutput(coral_map))
     
   
 } # end of histogram server
