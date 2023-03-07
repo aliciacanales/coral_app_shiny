@@ -14,16 +14,20 @@ library(rio)
 library(ggspatial)
 
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
-  mutate(date = ymd(date)) 
+  mutate(date = ymd(date)) %>% 
+  rename('Pocillopora' = poc,
+         'Acropora' = acr,
+         'Undetermined' = NA)
+
 location <- rio::import(here('data','coral_data_244_akd.xls'))
 location_geo <- st_as_sf(location, coords = c('long', 'lat'),
-                         crs = 4326) 
-mapview(location_geo, map.types = "OpenStreetMap.DE") 
+                          crs = 4326)
+mapview(location_geo, map.types = "OpenStreetMap.DE")
 location_geo <- st_as_sf(location, coords = c('long', 'lat'),
-                         crs = 4326) 
+                         crs = 4326)
 
-fp<-read_sf(here::here("data","xg569rm6446.shp")) %>% 
-  filter(hasc_1=="PF.WI") %>% 
+fp<-read_sf(here::here("data","xg569rm6446.shp")) %>%
+  filter(hasc_1=="PF.WI") %>%
   select(name_0,varname_1,geometry)
 
 
