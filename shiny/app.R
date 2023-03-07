@@ -20,6 +20,18 @@ mapview(location_geo, map.types = "OpenStreetMap.DE")
 location_geo <- st_as_sf(location, coords = c('long', 'lat'),
                          crs = 4326) 
 
+fp<-read_sf(here::here("data","xg569rm6446.shp")) %>% 
+  filter(hasc_1=="PF.WI") %>% 
+  select(name_0,varname_1,geometry)
+
+
+coral_map <- ggplot(data=fp)+
+  geom_sf()+
+  coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
+  annotation_scale(
+    location = "bl",
+    width_hint = 0.2)
+
 my_theme <- bs_theme(
   bg = '#B7D1DA',
   fg = '#465775', #color of font
@@ -74,13 +86,16 @@ server <- function(input, output) {
     ggplot(data = coral_reactive(), aes(x = length, y = width)) +
       geom_point(aes(color = genus)) + scale_color_manual(values = c('poc' = '#4dbedf', 'acr' = '#ea7070', 'NA' = '#fdc4b6')) +
       theme_minimal()
-  )
+    
+    
+      )
+  
   
   ### Tab 2
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
   
-  output$location_geo <- renderLeaflet(
+  output$coral_map <- rendersf(
     leaflet(location_geo)
     
   )
