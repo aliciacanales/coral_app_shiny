@@ -64,10 +64,9 @@ ui <- fluidPage(theme = my_theme,
                                     ) 
                            ),
                            tabPanel('Date'),
-                           tabPanel('map 2',
+                           tabPanel('Map 2',
                                     mainPanel('Output',
-                                              plotOutput('coral_map') 
-                                    )
+                                              plotOutput('coral_map'))
                            ))
 )
 
