@@ -12,12 +12,13 @@ library(leaflet)
 library(rio)
 #install.packages("ggspatial")
 library(ggspatial)
+library(shinyWidgets)
+library(plotly)
+library(mapboxapi)
 
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
-  mutate(date = ymd(date)) %>% 
-  rename('Pocillopora' = poc,
-         'Acropora' = acr,
-         'Undetermined' = NA)
+  mutate(date = ymd(date))
+
 
 location <- rio::import(here('data','coral_data_244_akd.xls'))
 location_geo <- st_as_sf(location, coords = c('long', 'lat'),
@@ -30,6 +31,7 @@ fp<-read_sf(here::here("data","xg569rm6446.shp")) %>%
   filter(hasc_1=="PF.WI") %>%
   select(name_0,varname_1,geometry)
 
+mapbox_token <- 'pk.eyJ1Ijoia2F0bWFja2F5IiwiYSI6ImNsZXh0emYwajBiajczcW8wdjhyeTU0MjIifQ.wuwPXNJ4x52xcWA_wGgtcg'
 
 coral_map <- ggplot(data=fp)+
   geom_sf()+
@@ -38,15 +40,21 @@ coral_map <- ggplot(data=fp)+
     location = "bl",
     width_hint = 0.2)
 
+
+
 my_theme <- bs_theme(
-  bg = '#B7D1DA',
-  fg = '#465775', #color of font
+  bg = 'lightblue',
+  fg = 'white', #color of font
   primary = 'white',
   base_font = font_google('Lexend')
 )
 
 
 ui <- fluidPage(theme = my_theme,
+                tags$h2('Adding shiny app background image'),
+                setBackgroundImage(
+                  src = 'https://www.snorkeling-report.com/wp-content/uploads/2019/11/coral-reef-restoration-sofitel-moorea-1.jpg'
+                ),
                 navbarPage("Coral Across Northshore Moorea",
                            tabPanel('About',
                                     mainPanel(
@@ -59,18 +67,22 @@ ui <- fluidPage(theme = my_theme,
                                       sidebarPanel("Genus",
                                                    checkboxGroupInput(inputId = 'pick_species',
                                                                       label = 'Choose species',
-                                                                      choices = unique(coral$genus)
+                                                                      choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
                                                    )
                                       ),
-                                      mainPanel("Output",
+                                      mainPanel("Length and Width distribution of Coral Species in Moorea",
                                                 plotOutput('coral_plot')
                                       )
                                     ) 
                            ),
-                           tabPanel('Date'),
+                           tabPanel('Date',
+                                    mainPanel('output'),
+                           plotlyOutput('plotly')
+                ),
+                           
                            tabPanel('Map 2',
                                     mainPanel('Output',
-                                              plotOutput('coral_map'))
+                                              plotOutput('map'))
                            ))
 )
 
@@ -80,30 +92,52 @@ ui <- fluidPage(theme = my_theme,
 server <- function(input, output) {
   
   
-  
-  #### Tab 1
   coral_reactive <- reactive({
     coral %>%
       filter(genus %in% input$pick_species)
-  })
+  }) # end of tab 1 server
+
   
-  output$coral_plot <- renderPlot(
+  output$coral_plot <- renderPlot({
     ggplot(data = coral_reactive(), aes(x = length, y = width)) +
       geom_point(aes(color = genus)) + scale_color_manual(values = c('poc' = '#4dbedf', 'acr' = '#ea7070', 'NA' = '#fdc4b6')) +
       theme_minimal()
-    
-    
-      )
+}) # end of coral plot server
+  
+   output$map <- renderPlot({
+      ggplot(data=fp)+
+        geom_sf()+
+        theme_minimal() +
+        coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
+        annotation_scale(
+          location = "bl",
+          width_hint = 0.2
+        ) +
+        geom_sf(data = location_geo, aes(color = 'coral'))+
+        coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
+       guides(col= guide_legend(title= "Location Site"))
+    })  # end of tab 3 map server
+
+   output$plotly <- renderPlotly ({
+     plot_ly(data = coral, x = ~long, y = ~lat) %>% 
+       plotly::add_mapbox_access_token(mapbox_token) %>% 
+       layout(mapbox = list(
+         style = 'mapbox://styles/mapbox/satellite-v9',
+         center = list(lon = -149.8458, lat = -17.5387),
+         zoom = 10
+       ))
+       
+   }) # end of plotly server
+}
   
   
   ### Tab 2
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
   
-  output$coral_map <- renderPlot(plotOutput(coral_map))
+  # output$coral_map <- renderPlot(plotOutput(coral_map))
     
-  
-} # end of histogram server
+   # end of histogram server
 
 
 
