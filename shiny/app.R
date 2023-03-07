@@ -10,6 +10,7 @@ library(sf)
 library(leaflet)
 install.packages("rio")
 library(rio)
+library(ggspatial)
 
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date)) 
@@ -64,7 +65,7 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Date'),
                            tabPanel('map 2',
                                     mainPanel('Output',
-                                              leafletOutput('location_geo') 
+                                              plotOutput('coral_map') 
                                     )
                            ))
 )
@@ -95,10 +96,9 @@ server <- function(input, output) {
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
   
-  output$coral_map <- rendersf(
-    leaflet(location_geo)
+  output$coral_map <- plotOutput(coral_map)
     
-  )
+  
 } # end of histogram server
 
 
