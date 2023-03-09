@@ -15,6 +15,9 @@ library(ggspatial)
 library(shinyWidgets)
 library(plotly)
 library(mapboxapi)
+library(tidymodels)
+library(jtools)
+library(tidyr)
 
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date))
@@ -73,7 +76,7 @@ my_theme <- bs_theme(
 ui <- fluidPage(theme = my_theme,
                 tags$h2('Adding shiny app background image'),
                 setBackgroundImage(
-                  src = 'https://www.snorkeling-report.com/wp-content/uploads/2019/11/coral-reef-restoration-sofitel-moorea-1.jpg'
+                  src = 'https://c4.wallpaperflare.com/wallpaper/927/873/113/corals-fishes-rays-sea-wallpaper-preview.jpg'
                 ),
                 navbarPage("Coral Across Northshore Moorea",
                            tabPanel('About',
