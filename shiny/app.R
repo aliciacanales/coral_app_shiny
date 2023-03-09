@@ -82,7 +82,7 @@ ui <- fluidPage(theme = my_theme,
                            
                            tabPanel('Map 2',
                                     mainPanel('Output',
-                                              plotOutput('map'))
+                                              plotlyOutput('map'))
                            ))
 )
 
@@ -104,7 +104,7 @@ server <- function(input, output) {
       theme_minimal()
 }) # end of coral plot server
   
-   output$map <- renderPlot({
+   output$map <- renderPlotly({
       ggplot(data=fp)+
         geom_sf()+
         theme_minimal() +
@@ -113,7 +113,7 @@ server <- function(input, output) {
           location = "bl",
           width_hint = 0.2
         ) +
-        geom_sf(data = location_geo, aes(color = 'coral'))+
+        geom_sf(data = location_geo, aes(color = genus))+
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
        guides(col= guide_legend(title= "Location Site"))
     })  # end of tab 3 map server
