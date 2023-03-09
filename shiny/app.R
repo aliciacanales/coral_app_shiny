@@ -40,7 +40,27 @@ coral_map <- ggplot(data=fp)+
     location = "bl",
     width_hint = 0.2)
 
+### predict
 
+poc_acr <- coral %>%
+  filter(genus %in% c('poc', 'acr')) %>% 
+  mutate(as.factor(site)) %>% 
+  mutate(genus = fct_drop(genus))
+
+### binary logistic regression model
+
+f1 <- genus ~ length + width
+coral_blr1 <- glm(formula = f1, data = poc_acr, 
+                  family = 'binomial') 
+coral_tidy <- tidy(coral_blr1)
+coral_fitted <- coral_blr1 %>% 
+  broom::augment(type.predict = 'response')
+
+# ex1 <- predict(coral_blr1, 
+#               data.frame(site = "120", #user input site, length, width 
+#                          length = 1.4,
+#                          width = 1.5),
+#               type = 'response')
 
 my_theme <- bs_theme(
   bg = 'lightblue',
