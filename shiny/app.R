@@ -15,6 +15,9 @@ library(ggspatial)
 library(shinyWidgets)
 library(plotly)
 library(mapboxapi)
+library(tidymodels)
+library(jtools)
+library(tidyr)
 
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date))
@@ -40,7 +43,27 @@ coral_map <- ggplot(data=fp)+
     location = "bl",
     width_hint = 0.2)
 
+### predict
 
+poc_acr <- coral %>%
+  filter(genus %in% c('poc', 'acr')) %>% 
+  mutate(as.factor(site)) %>% 
+  mutate(genus = fct_drop(genus))
+
+### binary logistic regression model
+
+f1 <- genus ~ length + width
+coral_blr1 <- glm(formula = f1, data = poc_acr, 
+                  family = 'binomial') 
+coral_tidy <- tidy(coral_blr1)
+coral_fitted <- coral_blr1 %>% 
+  broom::augment(type.predict = 'response')
+
+# ex1 <- predict(coral_blr1, 
+#               data.frame(site = "120", #user input site, length, width 
+#                          length = 1.4,
+#                          width = 1.5),
+#               type = 'response')
 
 my_theme <- bs_theme(
   bg = 'lightblue',
@@ -53,7 +76,7 @@ my_theme <- bs_theme(
 ui <- fluidPage(theme = my_theme,
                 tags$h2('Adding shiny app background image'),
                 setBackgroundImage(
-                  src = 'https://www.snorkeling-report.com/wp-content/uploads/2019/11/coral-reef-restoration-sofitel-moorea-1.jpg'
+                  src = 'https://c4.wallpaperflare.com/wallpaper/927/873/113/corals-fishes-rays-sea-wallpaper-preview.jpg'
                 ),
                 navbarPage("Coral Across Northshore Moorea",
                            tabPanel('About',
