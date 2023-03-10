@@ -38,7 +38,7 @@ mapbox_token <- 'pk.eyJ1Ijoia2F0bWFja2F5IiwiYSI6ImNsZXh0emYwajBiajczcW8wdjhyeTU0
 
 coral_map <- ggplot(data=fp)+
   geom_sf()+
-  coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
+  coord_sf(xlim=c(-149.70,-149.95), ylim=c(-17.42,-17.62))+
   annotation_scale(
     location = "bl",
     width_hint = 0.2)
@@ -56,6 +56,7 @@ f1 <- genus ~ length + width
 coral_blr1 <- glm(formula = f1, data = poc_acr, 
                   family = 'binomial') 
 coral_tidy <- tidy(coral_blr1)
+
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
@@ -101,6 +102,7 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Date',
                                     mainPanel('output'),
                            plotlyOutput('plotly')
+                           
                 ),
                            
                            tabPanel('Map 2',
@@ -152,8 +154,15 @@ server <- function(input, output) {
        
    }) # end of plotly
    
-   output$pred <- tableOutput(pred)
-}
+   output$bar <- renderPlot({
+     color <- c("cyan", "coral")
+     pred <- reactive_data()
+     barplot(colSums(pred[,c("P","Households")]),
+             ylab="Total",
+             xlab="Census Year",
+             names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
+             col = color)
+})
   
   
   ### Tab 2
