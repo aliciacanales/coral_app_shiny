@@ -22,18 +22,30 @@ library(tidyr)
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date))
 
+poc_acr <- coral %>%
+  filter(genus %in% c('poc', 'acr')) %>% 
+  mutate(as.factor(site)) %>% 
+  mutate(genus = fct_drop(genus))
+
+new_coral <- poc_acr %>% 
+  select(site, lat, long, genus) %>% 
+  group_by(site)
+
+counts <- new_coral %>% 
+  group_by('genus') %>% 
+  count(site) 
+
+comb_coral <- merge(new_coral, counts, by = 'site') %>% 
+  unique()
+
 location <- rio::import(here('data','coral_data_244_akd.xls'))
-location_geo <- st_as_sf(location, coords = c('long', 'lat'),
+
+comb_coral2 <- st_as_sf(comb_coral, coords = c('long', 'lat'),
                           crs = 4326)
-mapview(location_geo, map.types = "OpenStreetMap.DE")
-location_geo <- st_as_sf(location, coords = c('long', 'lat'),
-                         crs = 4326)
 
 fp<-read_sf(here::here("data","xg569rm6446.shp")) %>%
   filter(hasc_1=="PF.WI") %>%
   select(name_0,varname_1,geometry)
-
-mapbox_token <- 'pk.eyJ1Ijoia2F0bWFja2F5IiwiYSI6ImNsZXh0emYwajBiajczcW8wdjhyeTU0MjIifQ.wuwPXNJ4x52xcWA_wGgtcg'
 
 coral_map <- ggplot(data=fp)+
   geom_sf()+
@@ -41,20 +53,6 @@ coral_map <- ggplot(data=fp)+
   annotation_scale(
     location = "bl",
     width_hint = 0.2)
-
-### predict
-
-poc_acr <- coral %>%
-  filter(genus %in% c('poc', 'acr')) %>% 
-  mutate(as.factor(site)) %>% 
-  mutate(genus = fct_drop(genus))
-
-new_coral <- poc_acr %>% 
-  group_by(genus) %>% 
-  count(site) %>% 
-  pivot_wider(names_from = site,
-              values_from = n)
-
 
 ### binary logistic regression model
 
@@ -138,28 +136,17 @@ server <- function(input, output) {
           location = "bl",
           width_hint = 0.2
         ) +
-        geom_sf(data = new_coral, aes(color = genus))+
+        geom_sf(data = comb_coral2, aes(color = genus))+
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
        guides(col= guide_legend(title= "Location Site"))
      
-    })  # end of tab 3 map server
-
-   output$plotly <- renderPlotly ({
-     plot_ly(data = coral, x = ~long, y = ~lat) %>% 
-       plotly::add_mapbox_access_token(mapbox_token) %>% 
-       layout(mapbox = list(
-         style = 'mapbox://styles/mapbox/satellite-v9',
-         center = list(lon = -149.8458, lat = -17.5387),
-         zoom = 10
-       ))
-       
-   }) # end of plotly
+    })  # end of tab 3 map server, end of plotly
    
-   pred <- predict(coral_blr1, 
-                   data.frame(site = a,
-                              length = b,
-                              width = c),
-                   type = 'response')
+   # pred <- predict(coral_blr1, 
+   #                 data.frame(site = a,
+   #                            length = b,
+   #                            width = c),
+   #                 type = 'response')
    
    
    output$bar <- renderPlot({
@@ -173,7 +160,6 @@ server <- function(input, output) {
 })
   
 }
-
   ### Tab 2
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
