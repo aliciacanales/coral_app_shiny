@@ -59,11 +59,11 @@ coral_tidy <- tidy(coral_blr1)
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
-# ex1 <- predict(coral_blr1, 
-#               data.frame(site = "120", #user input site, length, width 
-#                          length = 1.4,
-#                          width = 1.5),
-#               type = 'response')
+pred <- predict(coral_blr1, 
+              data.frame(site = a,
+                         length = b,
+                         width = c),
+              type = 'response')
 
 my_theme <- bs_theme(
   bg = 'lightblue',
@@ -118,14 +118,14 @@ server <- function(input, output) {
   coral_reactive <- reactive({
     coral %>%
       filter(genus %in% input$pick_species)
-  }) # end of tab 1 server
+  }) # end of tab 1
 
   
   output$coral_plot <- renderPlot({
     ggplot(data = coral_reactive(), aes(x = length, y = width)) +
       geom_point(aes(color = genus)) + scale_color_manual(values = c('poc' = '#4dbedf', 'acr' = '#ea7070', 'NA' = '#fdc4b6')) +
       theme_minimal()
-}) # end of coral plot server
+}) # end of coral plot
   
    output$map <- renderPlotly({
       ggplot(data=fp)+
@@ -150,7 +150,9 @@ server <- function(input, output) {
          zoom = 10
        ))
        
-   }) # end of plotly server
+   }) # end of plotly
+   
+   output$pred <- tableOutput(pred)
 }
   
   
