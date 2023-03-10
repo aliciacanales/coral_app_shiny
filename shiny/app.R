@@ -32,10 +32,10 @@ new_coral <- poc_acr %>%
   group_by(site)
 
 counts <- new_coral %>% 
-  group_by('genus') %>% 
+  group_by(genus) %>% 
   count(site) 
 
-comb_coral <- merge(new_coral, counts, by = 'site') %>% 
+comb_coral <- counts %>% merge(new_coral, by = c('site', 'genus')) %>% 
   unique()
 
 location <- rio::import(here('data','coral_data_244_akd.xls'))
@@ -136,7 +136,7 @@ server <- function(input, output) {
           location = "bl",
           width_hint = 0.2
         ) +
-        geom_sf(data = comb_coral2, aes(color = site, label = genus))+
+        geom_sf(data = comb_coral2, aes(color = genus, label = n))+
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
        guides(col= guide_legend(title= "Location Site"))
      
