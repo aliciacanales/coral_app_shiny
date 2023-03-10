@@ -60,12 +60,6 @@ coral_tidy <- tidy(coral_blr1)
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
-pred <- predict(coral_blr1, 
-              data.frame(site = a,
-                         length = b,
-                         width = c),
-              type = 'response')
-
 my_theme <- bs_theme(
   bg = 'lightblue',
   fg = 'white', #color of font
@@ -154,6 +148,13 @@ server <- function(input, output) {
        ))
        
    }) # end of plotly
+   
+   pred <- predict(coral_blr1, 
+                   data.frame(site = a,
+                              length = b,
+                              width = c),
+                   type = 'response')
+   
    
    output$bar <- renderPlot({
      color <- c("cyan", "coral")
