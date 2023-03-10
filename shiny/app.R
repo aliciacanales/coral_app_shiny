@@ -136,7 +136,7 @@ server <- function(input, output) {
           location = "bl",
           width_hint = 0.2
         ) +
-        geom_sf(data = comb_coral2, aes(color = genus))+
+        geom_sf(data = comb_coral2, aes(color = site, label = genus))+
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
        guides(col= guide_legend(title= "Location Site"))
      
