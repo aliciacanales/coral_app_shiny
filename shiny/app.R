@@ -52,7 +52,7 @@ poc_acr <- coral %>%
 
 ### binary logistic regression model
 
-f1 <- genus ~ length + width
+f1 <- genus ~ length*width*site
 coral_blr1 <- glm(formula = f1, data = poc_acr, 
                   family = 'binomial') 
 coral_tidy <- tidy(coral_blr1)
@@ -141,6 +141,7 @@ server <- function(input, output) {
         geom_sf(data = location_geo, aes(color = genus))+
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
        guides(col= guide_legend(title= "Location Site"))
+     
     })  # end of tab 3 map server
 
    output$plotly <- renderPlotly ({
@@ -157,8 +158,8 @@ server <- function(input, output) {
    output$bar <- renderPlot({
      color <- c("cyan", "coral")
      pred <- reactive_data()
-     barplot(colSums(pred[,c("P","Households")]),
-             ylab="Total",
+     barplot(colSums(pred[,c("poc","acr")]),
+             ylab="% Likelihood",
              xlab="Census Year",
              names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
              col = color)
