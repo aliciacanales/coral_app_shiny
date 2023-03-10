@@ -109,7 +109,7 @@ ui <- fluidPage(theme = my_theme,
                              ),
                            
                                     mainPanel('Prediction Results'),
-                           plotlyOutput('bar')
+                           tableOutput('pred')
                            
                 ),
                            
@@ -155,26 +155,26 @@ server <- function(input, output) {
       
 user_df <- reactive({
   data.frame(
-    Site = character(input$site),
-    Length = numeric(input$length),
-    Width = numeric(input$width))
+    site = as.character(input$site),
+    length = as.numeric(input$length),
+    width = as.numeric(input$width))
   })
 
-pred <- predict(coral_blr1, user_df,
-                   type = 'response')
 
    
-   output$bar <- renderPlot({
-     color <- c("cyan", "coral")
-     pred <- reactiveValues()
-     barplot(colSums(pred[,c("poc","acr")]),
-             ylab="% Likelihood",
-             xlab="Census Year",
-             names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
-             col = color) 
-     input$button
+ output$bar <- renderPlot({
+   input$button
+   pred <- predict(coral_blr1, user_df(),
+                   type = 'response')
+    color <- c("cyan", "coral")
+    #use ggplot
+    barplot(colSums(pred[,c("poc","acr")]),
+            ylab="% Likelihood",
+            xlab="Census Year",
+            names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
+            col = color)
 })
-  
+
 }
   ### Tab 2
   
