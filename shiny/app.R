@@ -96,9 +96,20 @@ ui <- fluidPage(theme = my_theme,
                                       )
                                     ) 
                            ),
-                           tabPanel('Date',
-                                    mainPanel('output'),
-                           plotlyOutput('plotly')
+                           tabPanel('Predict Coral Species!', 
+                           sidebarPanel(
+                             textInput(inputId = "site",
+                                       label = "Site Number"),
+                             textInput(inputId = "length",
+                                       label = "Length"),
+                             textInput(inputId = "width",
+                                       label = "Width"),
+                             actionButton("button", "Analyze!"),
+                            plotOutput('bar')
+                             ),
+                           
+                                    mainPanel('Prediction Results'),
+                           plotlyOutput('bar')
                            
                 ),
                            
@@ -140,19 +151,28 @@ server <- function(input, output) {
        guides(col= guide_legend(title= "Location Site"))
      
     })  # end of tab 3 map server, end of plotly
-   
-   pred <- predict(coral_blr1, user_df,
+
+      
+user_df <- reactive({
+  data.frame(
+    Site = character(input$site),
+    Length = numeric(input$length),
+    Width = numeric(input$width))
+  })
+
+pred <- predict(coral_blr1, user_df,
                    type = 'response')
-   
+
    
    output$bar <- renderPlot({
      color <- c("cyan", "coral")
-     pred <- reactive_data()
+     pred <- reactiveValues()
      barplot(colSums(pred[,c("poc","acr")]),
              ylab="% Likelihood",
              xlab="Census Year",
              names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
-             col = color)
+             col = color) 
+     input$button
 })
   
 }
