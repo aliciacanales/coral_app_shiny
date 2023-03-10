@@ -166,7 +166,8 @@ server <- function(input, output) {
              col = color)
 })
   
-  
+}
+
   ### Tab 2
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
