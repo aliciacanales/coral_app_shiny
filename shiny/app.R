@@ -142,11 +142,8 @@ server <- function(input, output) {
      
     })  # end of tab 3 map server, end of plotly
    
-   # pred <- predict(coral_blr1, 
-   #                 data.frame(site = a,
-   #                            length = b,
-   #                            width = c),
-   #                 type = 'response')
+   pred <- predict(coral_blr1, user_df,
+                   type = 'response')
    
    
    output$bar <- renderPlot({
