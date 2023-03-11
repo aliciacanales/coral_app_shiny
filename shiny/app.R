@@ -38,13 +38,16 @@ counts <- new_coral %>%
   group_by(genus) %>% 
   count(site) 
 
-table_coral <- coral %>% 
-  select(site, genus, garden, perc_dead) %>% 
-  mutate(garden = as.factor(garden)) %>% 
-  mutate(genus = as.factor(genus)) %>% 
+garden_counts <- coral %>% 
+  select(genus, site, garden) %>% 
+  mutate(garden = as.factor(garden)) %>%
   group_by(genus) %>% 
-  count(site) %>% 
-  rename("coral_count" = n) 
+  count(site, garden)
+
+dead_counts <- coral %>% 
+  select(genus, site, perc_dead) %>% 
+  group_by(genus)
+  
 
 
   
