@@ -34,11 +34,11 @@ new_coral <- poc_acr %>%
   select(site, lat, long, genus) %>% 
   group_by(site)
 
-## Table -- tab 4 attempts
-# counts <- new_coral %>% 
-#   group_by(genus) %>% 
-#   count(site) 
-# 
+counts <- new_coral %>%
+  group_by(genus) %>%
+  count(site)
+#
+# Table -- tab 4 attempts
 # garden_counts <- coral %>% 
 #   select(genus, site, garden) %>% 
 #   mutate(garden = as.factor(garden)) %>%
@@ -63,7 +63,7 @@ plot_counts <- coral %>%
 
   plot_counts$bommie_loc[plot_counts$bommie_loc == 'N/A'] <- 'Undetermined'
 
-
+###
 
 comb_coral <- counts %>% merge(new_coral, by = c('site', 'genus')) %>% 
   unique()
@@ -119,7 +119,7 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Chart',
                                     sidebarLayout(
                                       sidebarPanel("Plot",
-                                                   checkboxGroupInput(inputId = 'coral_plot',
+                                                   selectInput(inputId = 'coral_plot',
                                                                       label = 'Choose plot',
                                                                       choices = c('1' = '1', '2' = '2', '3' = '3', '4' = '4', '5' = '5', '6'= '6'),
                                       # sidebarPanel("Genus",
@@ -177,14 +177,14 @@ server <- function(input, output) {
   
   
   coral_reactive <- reactive({
-    plot_counts %>%
-      filter(plot == input$plot)
+  plot_counts %>% 
+      filter(plot == input$coral_plot)
   }) # end of tab 1
 
 #data = coral_reactive(),
   output$coral_plot <- renderPlot({
-    ggplot(coral_reactive(), aes(x = bommie_loc, y = n)) +
-      geom_col() +
+  plot_output <- ggplot(coral_reactive(), aes(x = bommie_loc, y = n)) +
+      geom_bar(color = "lightblue") +
       theme_minimal()
     
 }) # end of coral plot
