@@ -158,22 +158,23 @@ user_df <- reactive({
     length = as.numeric(input$length),
     width = as.numeric(input$width))
   })
-   
+output$bar <- renderPlot({
    pred <- predict(coral_blr1, user_df(),
                    type = 'response') 
-   
-   
     color <- c("cyan", "coral")
-   
-    
     df <- tribble(
       ~ species,     ~ prob,
       'pocillopora',   pred,
       'acropora',   1 - pred)
    
     #use ggplot
-    ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) + geom_col()
+ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) + geom_col()
+     
+   })
+
 }
+
+
 
 
   ### Tab 2
