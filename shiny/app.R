@@ -35,23 +35,23 @@ new_coral <- poc_acr %>%
   group_by(site)
 
 ## Table -- tab 4 attempts
-counts <- new_coral %>% 
-  group_by(genus) %>% 
-  count(site) 
-
-garden_counts <- coral %>% 
-  select(genus, site, garden) %>% 
-  mutate(garden = as.factor(garden)) %>%
-  group_by(genus) %>% 
-  count(site, garden) 
-
-janitor::tabyl(garden_counts, genus, site, garden, n) %>% 
-  janitor::adorn_percentages("row") %>% 
-  janitor::adorn_pct_formatting(digits = 1)
-
-dead_counts <- coral %>% 
-  select(genus, site, perc_dead) %>% 
-  group_by(genus) 
+# counts <- new_coral %>% 
+#   group_by(genus) %>% 
+#   count(site) 
+# 
+# garden_counts <- coral %>% 
+#   select(genus, site, garden) %>% 
+#   mutate(garden = as.factor(garden)) %>%
+#   group_by(genus) %>% 
+#   count(site, garden) 
+# 
+# janitor::tabyl(garden_counts, genus, site, garden, n) %>% 
+#   janitor::adorn_percentages("row") %>% 
+#   janitor::adorn_pct_formatting(digits = 1)
+# 
+# dead_counts <- coral %>% 
+#   select(genus, site, perc_dead) %>% 
+#   group_by(genus) 
   
 ### Tab 2 i think
 plot_counts <- coral %>% 
@@ -190,7 +190,7 @@ server <- function(input, output) {
 }) # end of coral plot
   
    output$map <- renderPlotly({
-      plot1 <- ggplot(data=fp) +
+      ggplot(data=fp) +
         geom_sf()+
         theme_minimal() +
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
@@ -230,9 +230,9 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
 # end of predictor server 
 ## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
 
-output$table <- renderDataTable(
-  
-)
+# output$table <- renderDataTable(
+#   
+# )
 
 }
 
