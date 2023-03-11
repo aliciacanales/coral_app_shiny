@@ -63,6 +63,7 @@ coral_tidy <- tidy(coral_blr1)
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
+
 my_theme <- bs_theme(
   bg = 'lightblue',
   fg = 'white', #color of font
