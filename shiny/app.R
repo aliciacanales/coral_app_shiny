@@ -92,7 +92,7 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Chart',
                                     sidebarLayout(
                                       sidebarPanel("Genus",
-                                                   checkboxGroupInput(inputId = 'pick_species',
+                                                   checkboxGroupInput(inputId = 'pick_site',
                                                                       label = 'Choose species',
                                                                       choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
                                                    )
