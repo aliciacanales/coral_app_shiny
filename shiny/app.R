@@ -72,7 +72,7 @@ my_theme <- bs_theme(
 
 
 ui <- fluidPage(theme = my_theme,
-                tags$h2('Adding shiny app background image'),
+                tags$h2('Moorea Coral App'),
                 setBackgroundImage(
                   src = 'https://c4.wallpaperflare.com/wallpaper/927/873/113/corals-fishes-rays-sea-wallpaper-preview.jpg'
                 ),
@@ -104,12 +104,11 @@ ui <- fluidPage(theme = my_theme,
                                        label = "Length"),
                              textInput(inputId = "width",
                                        label = "Width"),
-                             actionButton("button", "Analyze!"),
-                            plotOutput('bar')
+                             submitButton("Analyze!")
                              ),
                            
                                     mainPanel('Prediction Results'),
-                           tableOutput('pred')
+                           plotOutput('bar')
                            
                 ),
                            
@@ -159,29 +158,24 @@ user_df <- reactive({
     length = as.numeric(input$length),
     width = as.numeric(input$width))
   })
-
-
    
- output$bar <- renderPlot({
-   input$button
    pred <- predict(coral_blr1, user_df(),
-                   type = 'response')
+                   type = 'response') 
+   
+   
     color <- c("cyan", "coral")
+   
+    
     df <- tribble(
       ~ species,     ~ prob,
       'pocillopora',   pred,
       'acropora',   1 - pred)
-     
+   
     #use ggplot
-    ggplot(df, x = 1, aes(y = prob, fill = species)) + geom_col(position = 'stack')
-    # barplot(colSums(pred[,c("poc","acr")]),
-    #         ylab="% Likelihood",
-    #         xlab="Census Year",
-    #         names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
-    #         col = color)
-})
-
+    ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) + geom_col()
 }
+
+
   ### Tab 2
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
