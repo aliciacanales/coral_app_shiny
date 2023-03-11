@@ -1,3 +1,6 @@
+## Tab 1 -- 
+## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
+
 
 library(tidyverse)
 library(shiny)
@@ -123,6 +126,11 @@ ui <- fluidPage(theme = my_theme,
                                               plotlyOutput('map'))
                            ),
                 tabPanel('4th one',
+                         sidebarPanel(
+                           textInput(inputId = "site",
+                                     label = "Site Number"),
+                           submitButton("Analyze!")
+                         ),
                          mainPanel('Output',
                                    plotlyOutput(''))),
                 tabPanel('Citations',
@@ -164,7 +172,7 @@ server <- function(input, output) {
        guides(col= guide_legend(title= "Location Site")) 
      
       
-    })  # end of tab 3 map server, end of plotly
+    })  # end of map server, end of plotly
 
       
 user_df <- reactive({
@@ -188,6 +196,9 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
   theme_minimal()
      
    })
+# end of predictor server 
+
+
 
 }
 
