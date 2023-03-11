@@ -34,6 +34,7 @@ new_coral <- poc_acr %>%
   select(site, lat, long, genus) %>% 
   group_by(site)
 
+## Table -- tab 4 attempts
 counts <- new_coral %>% 
   group_by(genus) %>% 
   count(site) 
@@ -42,17 +43,17 @@ garden_counts <- coral %>%
   select(genus, site, garden) %>% 
   mutate(garden = as.factor(garden)) %>%
   group_by(genus) %>% 
-  count(site, garden)
+  count(site, garden) 
+
+janitor::tabyl(garden_counts, genus, site, garden, n) %>% 
+  janitor::adorn_percentages("row") %>% 
+  janitor::adorn_pct_formatting(digits = 1)
 
 dead_counts <- coral %>% 
   select(genus, site, perc_dead) %>% 
-  group_by(genus)
+  group_by(genus) 
   
-
-
-  
-  # mutate(garden = mean(garden), perc_dead = mean(perc_dead)) 
-
+### Tab 2 i think
 plot_counts <- coral %>% 
   select(plot, genus, bommie_loc) %>% 
   group_by(plot) %>% 
