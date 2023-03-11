@@ -165,7 +165,7 @@ output$bar <- renderPlot({
     df <- tribble(
       ~ species,     ~ prob,
       'pocillopora',   pred,
-      'acropora',   1 - pred)
+      'acropora',   1- pred)
    
     #use ggplot
 ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) + geom_col()
