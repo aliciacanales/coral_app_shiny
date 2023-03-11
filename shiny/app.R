@@ -17,6 +17,7 @@ library(plotly)
 library(tidymodels)
 library(jtools)
 library(tidyr)
+library(RColorBrewer)
 
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date))
@@ -41,6 +42,7 @@ location <- rio::import(here('data','coral_data_244_akd.xls'))
 
 comb_coral2 <- st_as_sf(comb_coral, coords = c('long', 'lat'),
                           crs = 4326)
+  
 
 fp<-read_sf(here::here("data","xg569rm6446.shp")) %>%
   filter(hasc_1=="PF.WI") %>%
@@ -55,7 +57,7 @@ coral_map <- ggplot(data=fp)+
 
 ### binary logistic regression model
 
-f1 <- genus ~ length*width*site
+f1 <- genus ~ length * width * site
 coral_blr1 <- glm(formula = f1, data = poc_acr, 
                   family = 'binomial') 
 coral_tidy <- tidy(coral_blr1)
@@ -84,7 +86,7 @@ ui <- fluidPage(theme = my_theme,
                                       h5("This shiny app showcases the resilience of Moorea's outer reef communities to changing ocean conditions over the past decade, despite the acidic ocean conditions and rising ocean temperatures. The app provides data from coral surveys conducted in the Northshore lagoon in Moorea, where 5 5x5m transects were set up at 16 sites to measure branching (pocillopora and Acropora) corals' lengths and available settlement space in each plot. The app aims to help understand the spatial distribution of coral taxa and size structure to further understand community dynamics and identify areas of efficient out-planting sites and optimal habitat for restoration efforts that are in Moorea. The study suggests that the recovery of outer reef coral communities around Moorea may include an increased capacity to respond to future conditions due to the diversity of coral recruits, at least among pocillopora species."),
                                       h6('Alicia Canales, Kat Mackay, Danielle Hoekstra')
                                     )),
-                           tabPanel('Map 1',
+                           tabPanel('Chart',
                                     sidebarLayout(
                                       sidebarPanel("Genus",
                                                    checkboxGroupInput(inputId = 'pick_species',
@@ -107,16 +109,27 @@ ui <- fluidPage(theme = my_theme,
                                        label = "Width"),
                              submitButton("Analyze!")
                              ),
+                           sidebarPanel(
+                             h3('info about this predictor')
+                           ),
                            
                                     mainPanel('Prediction Results'),
                            plotOutput('bar')
                            
                 ),
                            
-                           tabPanel('Map 2',
+                           tabPanel('Map',
                                     mainPanel('Output',
                                               plotlyOutput('map'))
-                           ))
+                           ),
+                tabPanel('4th one',
+                         mainPanel('Output',
+                                   plotlyOutput(''))),
+                tabPanel('Citations',
+                         mainPanel(
+                           h1("citation here")
+                         ))
+                )
 )
 
 
@@ -138,7 +151,7 @@ server <- function(input, output) {
 }) # end of coral plot
   
    output$map <- renderPlotly({
-      ggplot(data=fp)+
+      plot1 <- ggplot(data=fp) +
         geom_sf()+
         theme_minimal() +
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
@@ -146,10 +159,11 @@ server <- function(input, output) {
           location = "bl",
           width_hint = 0.2
         ) +
-        geom_sf(data = comb_coral2, aes(color = genus, label = n))+
+        geom_sf(data = comb_coral2, aes(color = genus, label = n)) +
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
-       guides(col= guide_legend(title= "Location Site"))
+       guides(col= guide_legend(title= "Location Site")) 
      
+      
     })  # end of tab 3 map server, end of plotly
 
       
@@ -159,17 +173,19 @@ user_df <- reactive({
     length = as.numeric(input$length),
     width = as.numeric(input$width))
   })
+
 output$bar <- renderPlot({
    pred <- predict(coral_blr1, user_df(),
                    type = 'response') 
     color <- c("cyan", "coral")
     df <- tribble(
       ~ species,     ~ prob,
-      'pocillopora',   pred,
-      'acropora',   1- pred)
+      'pocillopora', pred,
+      'acropora',  1- pred)
    
-    #use ggplot
-ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) + geom_col()
+ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
+  geom_col() +
+  theme_minimal()
      
    })
 
