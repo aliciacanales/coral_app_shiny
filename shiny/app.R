@@ -148,13 +148,13 @@ server <- function(input, output) {
   
   coral_reactive <- reactive({
     coral %>%
-      filter(genus %in% input$pick_species)
+      filter(site %in% input$pick_site)
   }) # end of tab 1
 
   
   output$coral_plot <- renderPlot({
-    ggplot(data = coral_reactive(), aes(x = length, y = width)) +
-      geom_point(aes(color = genus)) + scale_color_manual(values = c('poc' = '#4dbedf', 'acr' = '#ea7070', 'NA' = '#fdc4b6')) +
+    ggplot(data = coral_reactive(), aes(x = plot, y = bommie_loc)) +
+      geom_col(aes(color = bommie_loc)) +
       theme_minimal()
 }) # end of coral plot
   
