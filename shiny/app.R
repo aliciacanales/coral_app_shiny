@@ -155,7 +155,7 @@ server <- function(input, output) {
       
 user_df <- reactive({
   data.frame(
-    site = as.character(input$site),
+    site = as.numeric(input$site),
     length = as.numeric(input$length),
     width = as.numeric(input$width))
   })
@@ -167,12 +167,18 @@ user_df <- reactive({
    pred <- predict(coral_blr1, user_df(),
                    type = 'response')
     color <- c("cyan", "coral")
+    df <- tribble(
+      ~ species,     ~ prob,
+      'pocillopora',   pred,
+      'acropora',   1 - pred)
+     
     #use ggplot
-    barplot(colSums(pred[,c("poc","acr")]),
-            ylab="% Likelihood",
-            xlab="Census Year",
-            names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
-            col = color)
+    ggplot(df, x = 1, aes(y = prob, fill = species)) + geom_col(position = 'stack')
+    # barplot(colSums(pred[,c("poc","acr")]),
+    #         ylab="% Likelihood",
+    #         xlab="Census Year",
+    #         names.arg = c("% Likleyhood of being Pocillopora (POC)", "% Likleyhood of being Acropora (ACR)"),
+    #         col = color)
 })
 
 }
