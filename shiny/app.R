@@ -102,17 +102,14 @@ ui <- fluidPage(theme = my_theme,
                                     )),
                            tabPanel('Chart',
                                     sidebarLayout(
-<<<<<<< HEAD
                                       sidebarPanel("Plot",
                                                    checkboxGroupInput(inputId = 'plot',
                                                                       label = 'Choose plot',
-                                                                      choices = c('1' = '1', '2' = '2', '3' = '3', '4' = '4', '5' = '5', '6'= '6')
-=======
+                                                                      choices = c('1' = '1', '2' = '2', '3' = '3', '4' = '4', '5' = '5', '6'= '6'),
                                       sidebarPanel("Genus",
                                                    checkboxGroupInput(inputId = 'pick_site',
                                                                       label = 'Choose species',
                                                                       choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
->>>>>>> c1bbf27a33ce8c7a4362b6c28ec03e9b188ca865
                                                    )
                                       ),
                                       mainPanel("Length and Width distribution of Coral Species in Moorea",
