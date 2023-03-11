@@ -38,6 +38,17 @@ counts <- new_coral %>%
   group_by(genus) %>% 
   count(site) 
 
+plot_counts <- coral %>% 
+  select(plot, genus, bommie_loc) %>% 
+  group_by(plot) %>% 
+  count(bommie_loc) %>% 
+  filter(!row_number() %in% c(1, 4)) %>% 
+  mutate(bommie_loc = ifelse(is.na(bommie_loc), 'Undetermined', bommie_loc))
+
+  plot_counts$bommie_loc[plot_counts$bommie_loc == 'N/A'] <- 'Undetermined'
+
+
+
 comb_coral <- counts %>% merge(new_coral, by = c('site', 'genus')) %>% 
   unique()
 
@@ -91,10 +102,10 @@ ui <- fluidPage(theme = my_theme,
                                     )),
                            tabPanel('Chart',
                                     sidebarLayout(
-                                      sidebarPanel("Genus",
-                                                   checkboxGroupInput(inputId = 'pick_species',
-                                                                      label = 'Choose species',
-                                                                      choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
+                                      sidebarPanel("Plot",
+                                                   checkboxGroupInput(inputId = 'plot',
+                                                                      label = 'Choose plot',
+                                                                      choices = c('1' = '1', '2' = '2', '3' = '3', '4' = '4', '5' = '5', '6'= '6')
                                                    )
                                       ),
                                       mainPanel("Length and Width distribution of Coral Species in Moorea",
@@ -147,15 +158,16 @@ server <- function(input, output) {
   
   
   coral_reactive <- reactive({
-    coral %>%
-      filter(site %in% input$pick_site)
+    plot_counts %>%
+      filter(plot == input$plot)
   }) # end of tab 1
 
-  
+#data = coral_reactive(),
   output$coral_plot <- renderPlot({
-    ggplot(data = coral_reactive(), aes(x = plot, y = bommie_loc)) +
-      geom_col(aes(color = bommie_loc)) +
+    ggplot(coral_reactive(), aes(x = bommie_loc, y = n)) +
+      geom_col() +
       theme_minimal()
+    
 }) # end of coral plot
   
    output$map <- renderPlotly({
