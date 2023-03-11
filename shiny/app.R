@@ -103,13 +103,13 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Chart',
                                     sidebarLayout(
                                       sidebarPanel("Plot",
-                                                   checkboxGroupInput(inputId = 'plot',
+                                                   checkboxGroupInput(inputId = 'coral_plot',
                                                                       label = 'Choose plot',
                                                                       choices = c('1' = '1', '2' = '2', '3' = '3', '4' = '4', '5' = '5', '6'= '6'),
-                                      sidebarPanel("Genus",
-                                                   checkboxGroupInput(inputId = 'pick_site',
-                                                                      label = 'Choose species',
-                                                                      choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
+                                      # sidebarPanel("Genus",
+                                      #              checkboxGroupInput(inputId = 'pick_site',
+                                      #                                 label = 'Choose species',
+                                      #                                 choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
                                                    )
                                       ),
                                       mainPanel("Length and Width distribution of Coral Species in Moorea",
@@ -140,21 +140,20 @@ ui <- fluidPage(theme = my_theme,
                                     mainPanel('Output',
                                               plotlyOutput('map'))
                            ),
-                tabPanel('4th one',
+                tabPanel('Data Table',
                          sidebarPanel(
                            textInput(inputId = "site",
                                      label = "Site Number"),
                            submitButton("Analyze!")
                          ),
                          mainPanel('Output',
-                                   plotlyOutput(''))),
+                                   dataTableOutput('table'))),
                 tabPanel('Citations',
                          mainPanel(
                            h1("citation here")
                          ))
                 )
 )
-
 
 
 # Server for histogram
@@ -213,8 +212,11 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
      
    })
 # end of predictor server 
+## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
 
-
+output$table <- renderDataTable(
+  
+)
 
 }
 
