@@ -65,8 +65,10 @@ plot_counts <- coral %>%
 
 ###
 
-comb_coral <- counts %>% merge(new_coral, by = c('site', 'genus')) %>% 
-  unique()
+comb_coral <- counts %>% 
+  merge(new_coral, by = c('site', 'genus')) %>% 
+  unique() %>% 
+  mutate(site = as.character('site'))
 
 location <- rio::import(here('data','coral_data_244_akd.xls'))
 
@@ -197,8 +199,8 @@ server <- function(input, output) {
         annotation_scale(
           location = "bl",
           width_hint = 0.2
-        ) +
-        geom_sf(data = comb_coral2, aes(color = genus, label = n)) +
+        ) + geom_sf(data = comb_coral2, aes(color = genus, 
+                                        label = n)) +
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
        guides(col= guide_legend(title= "Location Site")) 
      
