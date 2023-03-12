@@ -67,7 +67,8 @@ plot_counts <- coral %>%
 
 comb_coral <- counts %>% 
   merge(new_coral, by = c('site', 'genus')) %>% 
-  unique()
+  unique() %>% 
+  mutate(site = as.factor(site))
 
 location <- rio::import(here('data','coral_data_244_akd.xls'))
 
@@ -129,7 +130,7 @@ ui <- fluidPage(theme = my_theme,
                                       #                                 choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
                                                    )
                                       ),
-                                      mainPanel("Length and Width distribution of Coral Species in Moorea",
+                                      mainPanel("Plot information",
                                                 plotOutput('coral_plot')
                                       )
                                     ) 
@@ -153,8 +154,8 @@ ui <- fluidPage(theme = my_theme,
                            
                 ),
                            
-                           tabPanel('Map',
-                                    mainPanel('Output',
+                           tabPanel('Moorea Map',
+                                    mainPanel('Location Sites along Moorea',
                                               plotlyOutput('map'))
                            ),
                 tabPanel('Data Table',
@@ -192,15 +193,18 @@ server <- function(input, output) {
   
    output$map <- renderPlotly({
       ggplot(data=fp) +
-        geom_sf()+
+        geom_sf() +
         theme_minimal() +
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
         annotation_scale(
           location = "bl",
           width_hint = 0.2
-        ) + geom_sf(data = comb_coral2, aes(color = genus, text = paste("site:", site,"\n","Total Count:", n))) +
+        ) + geom_sf(data = comb_coral2, aes(color = site,
+                                            label = genus,
+                                            text = paste("Total Count", n)
+                                            )) +
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
-       guides(col= guide_legend(title= "Location Site")) 
+       guides(col= guide_legend(title= "Location Site"))
      
       
     })  # end of map server, end of plotly
