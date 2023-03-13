@@ -37,21 +37,37 @@ new_coral <- poc_acr %>%
 counts <- new_coral %>%
   group_by(genus) %>%
   count(site)
-#
-# Table -- tab 4 attempts
-# garden_counts <- coral %>% 
-#   select(genus, site, garden) %>% 
-#   mutate(garden = as.factor(garden)) %>%
-#   group_by(genus) %>% 
-#   count(site, garden) 
-# 
-# janitor::tabyl(garden_counts, genus, site, garden, n) %>% 
-#   janitor::adorn_percentages("row") %>% 
-#   janitor::adorn_pct_formatting(digits = 1)
-# 
-# dead_counts <- coral %>% 
-#   select(genus, site, perc_dead) %>% 
-#   group_by(genus) 
+
+# Table with site data
+counts_na <- coral %>%
+  group_by(genus) %>%
+  count(site) %>% 
+  rename("total n" = n)
+
+garden_counts <- coral %>% 
+  select(genus, site, garden) %>%
+  mutate(garden = as.factor(garden)) %>%
+  group_by(genus) %>%
+  count(site, garden) %>% 
+  filter(garden == 'Y')
+
+gc <- garden_counts %>% 
+  select(site, genus, n)
+
+dead_counts <- coral %>%
+  select(genus, site, perc_dead) %>%
+  group_by(genus, site) %>% 
+  summarise(sum_of_runs = sum(perc_dead),
+            average_of_perc_dead = mean(perc_dead, na.rm = TRUE)) 
+
+dc <- dead_counts %>% 
+  select(site, genus, average_of_perc_dead)
+
+site_class <- full_join(dc, gc)
+
+sites <- full_join(site_class, counts_na) %>% 
+  rename("# in garden" = n)
+
   
 ### Tab 2 i think
 plot_counts <- coral %>% 
@@ -104,7 +120,6 @@ my_theme <- bs_theme(
   primary = 'white',
   base_font = font_google('Lexend')
 )
-
 
 ui <- fluidPage(theme = my_theme,
                 tags$h2('Moorea Coral App'),
@@ -173,10 +188,8 @@ ui <- fluidPage(theme = my_theme,
                 )
 )
 
-
 # Server for histogram
 server <- function(input, output) {
-  
   
   coral_reactive <- reactive({
   plot_counts %>% 
@@ -225,6 +238,7 @@ output$bar <- renderPlot({
       ~ species,     ~ prob,
       'pocillopora', pred,
       'acropora',  1- pred)
+    
    
 ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
   geom_col() +
