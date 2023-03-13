@@ -39,19 +39,33 @@ counts <- new_coral %>%
   count(site)
 
 # Table -- tab 4 attempts
-garden_counts <- coral %>%
+counts_2 <- coral %>%
+  group_by(genus) %>%
+  count(site) %>% 
+  rename("total n" = n)
+
+garden_counts <- coral %>% 
   select(genus, site, garden) %>%
   mutate(garden = as.factor(garden)) %>%
   group_by(genus) %>%
-  count(site, garden)
+  count(site, garden) %>% 
+  filter(garden == 'Y')
 
-janitor::tabyl(garden_counts, genus, site, garden, n) %>%
-  janitor::adorn_percentages("row") %>%
-  janitor::adorn_pct_formatting(digits = 1)
+gc <- garden_counts %>% 
+  select(site, genus, n)
 
 dead_counts <- coral %>%
   select(genus, site, perc_dead) %>%
-  group_by(genus)
+  group_by(genus, site) %>% 
+  summarise(sum_of_runs = sum(perc_dead),
+            average_of_perc_dead = mean(perc_dead, na.rm = TRUE)) 
+
+dc <- dead_counts %>% 
+  select(site, genus, average_of_perc_dead)
+
+site_class <- full_join(dc, gc)
+
+sites <- full_join(site_class, counts_2)
 
 ### Tab 2 i think
 plot_counts <- coral %>% 
