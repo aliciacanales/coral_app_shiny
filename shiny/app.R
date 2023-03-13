@@ -103,6 +103,16 @@ coral_map <- ggplot(data=fp)+
     location = "bl",
     width_hint = 0.2)
 
+### bommie location plot data
+
+bom_dead <- coral %>% 
+  select(genus, bommie_loc, perc_dead) %>% 
+  group_by(bommie_loc) %>% 
+  summarise(sum_of_runs = sum(perc_dead),
+            average_of_perc_dead = mean(perc_dead, na.rm = TRUE)) %>% 
+  filter(bommie_loc != "acr", bommie_loc != "poc", bommie_loc != "stop", bommie_loc != "N/A", bommie_loc != "N/A") %>% 
+  rename("n" = sum_of_runs)
+
 ### Binary Logistic Regression model
 
 f1 <- genus ~ length * width * site
