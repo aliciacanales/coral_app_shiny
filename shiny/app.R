@@ -38,7 +38,7 @@ counts <- new_coral %>%
   group_by(genus) %>%
   count(site)
 
-# Table with site data
+### Site Table Wrangling 
 counts_na <- coral %>%
   group_by(genus) %>%
   count(site) %>% 
@@ -172,14 +172,14 @@ ui <- fluidPage(theme = my_theme,
                                     mainPanel('Location Sites along Moorea',
                                               plotlyOutput('map'))
                            ),
-                tabPanel('Data Table',
+                tabPanel('Table',
                          sidebarPanel(
-                           textInput(inputId = "site",
-                                     label = "Site Number"),
-                           submitButton("Analyze!")
-                         ),
+                          radioButtons(inputId = 'site_select', 
+                          label = "Choose Site", 
+                          choices = c('120' = '120', '124' = '124', '131' = '131', '134' = '134', '136' = '136', '143' = '143', '147' = '147', '149' = '149', '152' = '152', '154' = '154', '157' = '157', '167' = '167', '171' = '171', '173' = '173', '183' = '183', '185' = '185', '186' = '186')
+                         )),
                          mainPanel('Output',
-                                   dataTableOutput('table'))),
+                                   tableOutput(outputId = 'table'))),
                 tabPanel('Citations',
                          mainPanel(
                            h1("citation here")
@@ -244,12 +244,16 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
   theme_minimal()
      
    })
-# end of predictor server 
-## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
+# end of predictor server
+# Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
+site_select <- reactive({
+  sites %>% 
+    filter(site == input$site)
+})
 
-# output$table <- renderDataTable(
-#   
-# )
+output$table <- renderTable({
+site_select()
+  })
 
 }
 
