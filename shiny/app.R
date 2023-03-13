@@ -160,7 +160,8 @@ ui <- fluidPage(theme = my_theme,
                                       textInput(inputId = "width",
                                         label = "Width"),
                                       submitButton("Analyze!"),
-                                      'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
+                                      '
+This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
                            
                                     mainPanel('Prediction Results',
                            plotOutput('bar')),
