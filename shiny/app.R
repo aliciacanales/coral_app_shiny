@@ -22,6 +22,7 @@ library(jtools)
 library(tidyr)
 library(RColorBrewer)
 
+## Reading in data
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date))
 
@@ -68,7 +69,7 @@ site_class <- full_join(dc, gc)
 sites <- full_join(site_class, counts_na) %>% 
   rename("# in garden" = n)
 
-### Tab 2 i think
+### Tab 2
 plot_counts <- coral %>% 
   select(plot, genus, bommie_loc) %>% 
   group_by(plot) %>% 
@@ -78,7 +79,7 @@ plot_counts <- coral %>%
 
   plot_counts$bommie_loc[plot_counts$bommie_loc == 'N/A'] <- 'Undetermined'
 
-###
+### Locations
 
 comb_coral <- counts %>% 
   merge(new_coral, by = c('site', 'genus')) %>% 
@@ -102,7 +103,7 @@ coral_map <- ggplot(data=fp)+
     location = "bl",
     width_hint = 0.2)
 
-### binary logistic regression model
+### Binary Logistic Regression model
 
 f1 <- genus ~ length * width * site
 coral_blr1 <- glm(formula = f1, data = poc_acr, 
@@ -188,7 +189,7 @@ ui <- fluidPage(theme = my_theme,
                            h1("citation here")
                          ))
                 
-)
+),
 
 # Server for histogram
 server <- function(input, output) {
