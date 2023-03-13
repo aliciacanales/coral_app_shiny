@@ -37,22 +37,22 @@ new_coral <- poc_acr %>%
 counts <- new_coral %>%
   group_by(genus) %>%
   count(site)
-#
+
 # Table -- tab 4 attempts
-# garden_counts <- coral %>% 
-#   select(genus, site, garden) %>% 
-#   mutate(garden = as.factor(garden)) %>%
-#   group_by(genus) %>% 
-#   count(site, garden) 
-# 
-# janitor::tabyl(garden_counts, genus, site, garden, n) %>% 
-#   janitor::adorn_percentages("row") %>% 
-#   janitor::adorn_pct_formatting(digits = 1)
-# 
-# dead_counts <- coral %>% 
-#   select(genus, site, perc_dead) %>% 
-#   group_by(genus) 
-  
+garden_counts <- coral %>%
+  select(genus, site, garden) %>%
+  mutate(garden = as.factor(garden)) %>%
+  group_by(genus) %>%
+  count(site, garden)
+
+janitor::tabyl(garden_counts, genus, site, garden, n) %>%
+  janitor::adorn_percentages("row") %>%
+  janitor::adorn_pct_formatting(digits = 1)
+
+dead_counts <- coral %>%
+  select(genus, site, perc_dead) %>%
+  group_by(genus)
+
 ### Tab 2 i think
 plot_counts <- coral %>% 
   select(plot, genus, bommie_loc) %>% 
@@ -223,12 +223,14 @@ output$bar <- renderPlot({
     color <- c("cyan", "coral")
     df <- tribble(
       ~ species,     ~ prob,
-      'pocillopora', pred,
-      'acropora',  1- pred)
+      'poc',      pred,
+      'acr',    1 - pred)
    
-ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
-  geom_col() +
-  theme_minimal()
+        
+  ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
+    geom_col() +
+    theme_minimal()
+
      
    })
 # end of predictor server 
