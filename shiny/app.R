@@ -21,6 +21,9 @@ library(tidymodels)
 library(jtools)
 library(tidyr)
 library(RColorBrewer)
+library(dplyr)
+library(ggplot2)
+library(moonBook)
 
 ## Reading in data
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
@@ -217,9 +220,12 @@ server <- function(input, output) {
 
 #data = coral_reactive(),
   output$coral_plot <- renderPlot({
-  plot_output <- ggplot(coral_reactive(), aes(x = bommie_loc, y = n)) +
-      geom_bar(color = "lightblue") +
-      theme_minimal()
+  plot_output <- PieDonut(bom_dead, aes(bommie_loc, avg_perc_dead, count = n), 
+  title = "pie")
+    
+    # ggplot(coral_reactive(), aes(x = bommie_loc, y = n)) +
+    #   geom_bar(color = "lightblue") +
+    #   theme_minimal()
     
 }) # end of coral plot
   
