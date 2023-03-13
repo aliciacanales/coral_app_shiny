@@ -39,7 +39,7 @@ counts <- new_coral %>%
   count(site)
 
 # Table -- tab 4 attempts
-counts_2 <- coral %>%
+counts_na <- coral %>%
   group_by(genus) %>%
   count(site) %>% 
   rename("total n" = n)
@@ -65,7 +65,8 @@ dc <- dead_counts %>%
 
 site_class <- full_join(dc, gc)
 
-sites <- full_join(site_class, counts_2)
+sites <- full_join(site_class, counts_na) %>% 
+  rename("# in garden" = n)
 
 ### Tab 2 i think
 plot_counts <- coral %>% 
@@ -247,12 +248,12 @@ output$bar <- renderPlot({
 
      
    })
-# end of predictor server 
-## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
+# end of predictor server
+# Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
 
-# output$table <- renderDataTable(
-#   
-# )
+output$table <- renderDataTable(
+
+)
 
 }
 
