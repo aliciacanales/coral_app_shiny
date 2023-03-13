@@ -68,7 +68,6 @@ site_class <- full_join(dc, gc)
 sites <- full_join(site_class, counts_na) %>% 
   rename("# in garden" = n)
 
-  
 ### Tab 2 i think
 plot_counts <- coral %>% 
   select(plot, genus, bommie_loc) %>% 
