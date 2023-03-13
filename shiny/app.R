@@ -189,7 +189,7 @@ ui <- fluidPage(theme = my_theme,
                            h1("citation here")
                          ))
                 
-)
+))
 
 
 # Server for histogram
