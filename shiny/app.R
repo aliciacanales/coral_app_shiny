@@ -113,6 +113,12 @@ bom_dead <- coral %>%
   filter(bommie_loc != "acr", bommie_loc != "poc", bommie_loc != "stop", bommie_loc != "N/A", bommie_loc != "N/A") %>% 
   rename("n" = sum_of_runs)
 
+bommie_plot <- bom_dead %>% 
+  ggplot(aes(x = bommie_loc, y = avg_perc_dead)) +
+  geom_col() +
+  theme_minimal() +
+  labs(x = 'Bommie Location', y = 'Average % Dead')
+
 ### Binary Logistic Regression model
 
 f1 <- genus ~ length * width * site
