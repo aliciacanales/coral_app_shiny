@@ -169,17 +169,22 @@ ui <- fluidPage(theme = my_theme,
                 ),
                            
                            tabPanel('Moorea Map',
+                                  sidebarLayout(position = 'right',  
+                                    sidebarPanel(
+                                                 "This map shows the sites along the island of Moorea that is part of French Polynesia's Society Islands archipelago. Each point displays the site number and the dominant genus' total number of individuals. These sites are important to examine individually to pinpoint where restoration efforts are most needed."),
                                     mainPanel('Location Sites along Moorea',
-                                              plotlyOutput('map'))
+                                              plotlyOutput('map')))
                            ),
                 tabPanel('Table',
+                        sidebarLayout(position = "left",
                          sidebarPanel(
                           radioButtons(inputId = 'site_select', 
                           label = "Choose Site", 
                           choices = c('120' = '120', '124' = '124', '131' = '131', '134' = '134', '136' = '136', '143' = '143', '147' = '147', '149' = '149', '152' = '152', '154' = '154', '157' = '157', '167' = '167', '171' = '171', '173' = '173', '183' = '183', '185' = '185', '186' = '186')
                          )),
                          mainPanel('Output',
-                                   tableOutput(outputId = 'table'))),
+                                   tableOutput(outputId = 'table'),
+                                   'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
                 tabPanel('Citations',
                          mainPanel(
                            h1("citation here")
