@@ -149,24 +149,22 @@ ui <- fluidPage(theme = my_theme,
                                       )
                                     ) 
                            ),
-                           tabPanel('Predict Coral Species!', 
-                           sidebarPanel(
-                             textInput(inputId = "site",
+                           tabPanel('Predict Coral Species!',
+                                    sidebarLayout( position = 'left',
+                                     sidebarPanel(
+                                       'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
+                                      textInput(inputId = "site",
                                        label = "Site Number"),
-                             textInput(inputId = "length",
+                                      textInput(inputId = "length",
                                        label = "Length"),
-                             textInput(inputId = "width",
-                                       label = "Width"),
-                             submitButton("Analyze!")
-                             ),
-                           sidebarPanel(
-                             h3('info about this predictor')
-                           ),
+                                      textInput(inputId = "width",
+                                        label = "Width"),
+                                      submitButton("Analyze!"),
                            
-                                    mainPanel('Prediction Results'),
-                           plotOutput('bar')
+                                    mainPanel('Prediction Results',
+                           plotOutput('bar')),
                            
-                ),
+                )),
                            
                            tabPanel('Moorea Map',
                                   sidebarLayout(position = 'right',  
@@ -189,7 +187,7 @@ ui <- fluidPage(theme = my_theme,
                          mainPanel(
                            h1("citation here")
                          ))
-                )
+                
 )
 
 # Server for histogram
