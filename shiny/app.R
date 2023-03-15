@@ -326,8 +326,10 @@ output$bar <- renderPlot({
       'Pocillopora', pred,
       'Acropora',  1- pred) 
 ##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
+    # Example values for confirmation it works:
+      # POC - Site = 143, Length = 15.5, Width = 12 -- prediction value confidence 0.8179 POC
+      # ACR - Site = 186, Length = 18.6, Width = 17.1 -- prediction value confidence 0.7410 ACR
     
-   
 ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
   theme_minimal() + 
   labs(x = "Species", y = "Probability") +
