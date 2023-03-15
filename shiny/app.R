@@ -126,7 +126,8 @@ site_bom <- coral %>%
   summarise(sum_of_runs = sum(perc_dead),
             average_of_perc_dead = mean(perc_dead, na.rm = TRUE)) %>% 
   filter(bommie_loc != "acr", bommie_loc != "poc", bommie_loc != "stop", bommie_loc != "N/A", bommie_loc != "N/A") %>% 
-  rename("n" = sum_of_runs, "avg_perc_dead" = average_of_perc_dead)
+  rename("n" = sum_of_runs, "avg_perc_dead" = average_of_perc_dead) %>% 
+  mutate(site = as.factor(site))
 
 ### Binary Logistic Regression model
 
@@ -240,14 +241,11 @@ server <- function(input, output) {
 
 #data = coral_reactive(),
   output$coral_plot <- renderPlot({
-    # slices <- c(0, 12.9, 26.4, 34.9, 25.8)
-    # lbls <- c("bottom", "inside", "side", "top", "under")
-    # pie(slices, labels=lbls, main="Pie Chart of bommies") +
-    #   theme_minimal()
-    
-ggplot(data = coral_reactive(), aes(x = bommie_loc, y = average_of_perc_dead)) +
-     geom_bar() +
-    theme_minimal()
+    g <- ggplot(site_bom, aes(site))
+    g + geom_bar(aes(fill=bommie_loc), width = 0.5) + 
+      theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+      labs(title="Bommie Locs", 
+           subtitle="pls work") 
     
 }) # end of coral plot
   
