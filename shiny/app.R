@@ -152,7 +152,7 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Chart',
                                     sidebarLayout(
                                       sidebarPanel("Plot",
-                                                   selectInput(inputId = 'coral_plot',
+                                                   selectInput(inputId = 'plot_coral',
                                                                       label = 'Choose plot',
                                                                       choices = c('1' = '1', '2' = '2', '3' = '3', '4' = '4', '5' = '5', '6'= '6'),
                                       # sidebarPanel("Genus",
@@ -193,10 +193,18 @@ ui <- fluidPage(theme = my_theme,
                 tabPanel('Table',
                         sidebarLayout(position = "left",
                          sidebarPanel(
-                          radioButtons(inputId = 'site_select', 
-                          label = "Choose Site", 
-                          choices = unique(sites$site),
-                          selected = "134")),
+                           radioButtons(inputId = 'site_select',
+                                        label = "Choose Site",
+                                        choices = unique(sites$site),
+                                        selected = "134")),
+                          # prettyCheckbox(inputId = 'site_select', 
+                          # label = "Choose Site", 
+                          # choices = unique(sites$site),
+                          # selected = "134", 
+                          # thick = TRUE,
+                          # animation = "pulse",
+                          # status = "info")
+                          # )),
                          # selected = unique(sites$site) [1])),
                          mainPanel('Output',
                                    tableOutput(outputId = 'table'),
@@ -219,15 +227,14 @@ server <- function(input, output) {
 
 #data = coral_reactive(),
   output$coral_plot <- renderPlot({
-    slices <- c(0, 12.9, 26.4, 34.9, 25.8)
-    lbls <- c("bottom", "inside", "side", "top", "under")
-    pie(slices, labels=lbls, main="Pie Chart of bommies") + 
-      scale_fill_manual(values = c("#D2D0C3", "#A0D3F2", "#8DC3F2", "#74C6DB", "#6F9ABF")) + 
-      theme_minimal() 
-    
-    # ggplot(coral_reactive(), aes(x = bommie_loc, y = n)) +
-    #   geom_bar(color = "lightblue") +
+    # slices <- c(0, 12.9, 26.4, 34.9, 25.8)
+    # lbls <- c("bottom", "inside", "side", "top", "under")
+    # pie(slices, labels=lbls, main="Pie Chart of bommies") +
     #   theme_minimal()
+    
+ggplot(data = coral_reactive(), aes(x = bommie_loc, y = average_of_perc_dead)) +
+     geom_bar() +
+    theme_minimal()
     
 }) # end of coral plot
   
