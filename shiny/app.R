@@ -119,6 +119,15 @@ bommie_plot <- bom_dead %>%
   theme_minimal() +
   labs(x = 'Bommie Location', y = 'Average % Dead')
 
+##### number of observations at each bommie location per site
+site_bom <- coral %>% 
+  select(site, bommie_loc, perc_dead) %>% 
+  group_by(site, bommie_loc) %>% 
+  summarise(sum_of_runs = sum(perc_dead),
+            average_of_perc_dead = mean(perc_dead, na.rm = TRUE)) %>% 
+  filter(bommie_loc != "acr", bommie_loc != "poc", bommie_loc != "stop", bommie_loc != "N/A", bommie_loc != "N/A") %>% 
+  rename("n" = sum_of_runs, "avg_perc_dead" = average_of_perc_dead)
+
 ### Binary Logistic Regression model
 
 f1 <- genus ~ length * width * site
