@@ -175,7 +175,8 @@ ui <- fluidPage(theme = my_theme,
                                                    )
                                       ),
                                       mainPanel("Plot information",
-                                                plotOutput('coral_plot')
+                                                plotOutput('coral_plot'),
+                                                plotOutput('coral_pie')
                                       )
                                     ) 
                            ),
