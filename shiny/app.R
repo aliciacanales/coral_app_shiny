@@ -159,10 +159,9 @@ ui <- fluidPage(theme = my_theme,
                                     mainPanel(
                                       h1('Overview of the Study'),
                                       h5("This shiny app showcases the resilience of Moorea's outer reef communities to changing ocean conditions over the past decade, despite the acidic ocean conditions and rising ocean temperatures. The app provides data from coral surveys conducted in the Northshore lagoon in Moorea, where 5 5x5m transects were set up at 16 sites to measure branching (pocillopora and Acropora) corals' lengths and available settlement space in each plot. The app aims to help understand the spatial distribution of coral taxa and size structure to further understand community dynamics and identify areas of efficient out-planting sites and optimal habitat for restoration efforts that are in Moorea. The study suggests that the recovery of outer reef coral communities around Moorea may include an increased capacity to respond to future conditions due to the diversity of coral recruits, at least among pocillopora species."),
-                                      h6('Alicia Canales, Danielle Hoekstra, Kat Mackay'),
                                       img(src='https://reefbuilders.com/wp-content/blogs.dir/1/files/2019/07/Acropora-anthocercis-2-770x510.jpg', height = "200px", width = "300px"),
                                       img(src = "https://media.istockphoto.com/id/1333638431/photo/pocillopora-damicornis-pink-colorful-sps-coral-in-red-sea-underwater-scene.jpg?s=612x612&w=0&k=20&c=2MPGelRPoVE92rs6smWFHFFviGl8dJ_TqkRjQSRNp20=", height = '200px', width = '300px'), 
-                                      
+                                      tags$figcaption("Coral species in the study: Acropora (left) and Pocillopora (right)")
                                     )),
                            tabPanel('Chart',
                                     sidebarLayout(
@@ -229,7 +228,8 @@ ui <- fluidPage(theme = my_theme,
                 tabPanel('Citation',
                          mainPanel(
                            h5("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
-                           h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data.")
+                           h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."), 
+                            h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay')
                          ))
                 
 ))
