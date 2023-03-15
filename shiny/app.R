@@ -240,14 +240,27 @@ server <- function(input, output) {
   }) # end of tab 1
 
 #data = coral_reactive(),
+  # output$coral_plot <- renderPlot({
+  #   g <- ggplot(site_bom, aes(site))
+  #   g + geom_bar(aes(fill=bommie_loc), width = 0.5) + 
+  #     theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  #     labs(title="Bommie Locs", 
+  #          subtitle="pls work")  
+  # })
+  
   output$coral_plot <- renderPlot({
-    g <- ggplot(site_bom, aes(site))
-    g + geom_bar(aes(fill=bommie_loc), width = 0.5) + 
-      theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
-      labs(title="Bommie Locs", 
-           subtitle="pls work") 
+    ggplot(site_bom, aes(fill = bommie_loc, y = avg_perc_dead , x = site)) +
+      geom_bar(position = "stack", stat = "identity")
+  })
     
-}) # end of coral plot
+  output$coral_pie <- renderPlot({
+      slices <- c(0, 12.9, 26.4, 34.9, 25.8)
+      lbls <- c("bottom", "inside", "side", "top", "under")
+      pie(slices, labels=lbls, main="Pie Chart of bommies") +
+        theme_minimal()
+  })
+  
+     # end of coral plot
   
    output$map <- renderPlotly({
       ggplot(data=fp) +
