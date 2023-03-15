@@ -21,9 +21,9 @@ library(tidymodels)
 library(jtools)
 library(tidyr)
 library(RColorBrewer)
-library(dplyr)
-library(ggplot2)
-library(moonBook)
+# library(dplyr)
+# library(ggplot2)
+# library(moonBook)
 
 ## Reading in data
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
@@ -198,14 +198,16 @@ ui <- fluidPage(theme = my_theme,
                          sidebarPanel(
                           radioButtons(inputId = 'site_select', 
                           label = "Choose Site", 
-                          choices = c('120' = '120', '124' = '124', '131' = '131', '134' = '134', '136' = '136', '143' = '143', '147' = '147', '149' = '149', '152' = '152', '154' = '154', '157' = '157', '167' = '167', '171' = '171', '173' = '173', '183' = '183', '185' = '185', '186' = '186')
-                         )),
+                          choices = unique(sites$site),
+                          selected = "134")),
+                         # selected = unique(sites$site) [1])),
                          mainPanel('Output',
                                    tableOutput(outputId = 'table'),
                                    'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
-                tabPanel('Citations',
+                tabPanel('Citation',
                          mainPanel(
-                           h1("citation here")
+                           h3("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
+                           h4("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data.")
                          ))
                 
 ))
@@ -272,13 +274,15 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
    })
 # end of predictor server
 # Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
-site_select <- reactive({
+
+site_reactive <- reactive({
+  message("in site_reactive, input$site_select = ", input$site_select)
   sites %>% 
-    filter(site == input$site)
+    filter(site == input$site_select)
 })
 
 output$table <- renderTable({
-site_select()
+site_reactive()
   })
 
 }
