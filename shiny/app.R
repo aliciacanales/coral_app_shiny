@@ -45,7 +45,7 @@ counts <- new_coral %>%
 counts_na <- coral %>%
   group_by(genus) %>%
   count(site) %>% 
-  rename("total n" = n)
+  rename("total_n" = n)
 
 garden_counts <- coral %>% 
   select(genus, site, garden) %>%
@@ -69,7 +69,14 @@ dc <- dead_counts %>%
 site_class <- full_join(dc, gc)
 
 sites <- full_join(site_class, counts_na) %>% 
-  rename("# in garden" = n)
+  rename("in_garden" = n) 
+
+sites_renamed <- sites %>% 
+  rename("Site" = site, 
+         "Species" = genus,
+         "Average_%_Dead" = average_of_perc_dead, 
+         "Number_in_Garden" = in_garden,
+         "Total_Observations" = total_n)
 
 ### Tab 2
 plot_counts <- coral %>% 
@@ -165,7 +172,7 @@ ui <- fluidPage(theme = my_theme,
                                       img(src = "https://media.istockphoto.com/id/1333638431/photo/pocillopora-damicornis-pink-colorful-sps-coral-in-red-sea-underwater-scene.jpg?s=612x612&w=0&k=20&c=2MPGelRPoVE92rs6smWFHFFviGl8dJ_TqkRjQSRNp20=", height = '200px', width = '300px'), 
                                       tags$figcaption("Coral species in the study: Acropora (left) and Pocillopora (right)")
                                     )),
-                           tabPanel('Chart',
+                           tabPanel('Bommie Info',
                                     sidebarLayout(
                                       sidebarPanel("Site",
                                                    checkboxGroupInput(inputId = 'site_coral',
@@ -209,7 +216,7 @@ ui <- fluidPage(theme = my_theme,
                          sidebarPanel(
                            selectInput(inputId = 'site_select',
                                         label = "Choose Site",
-                                        choices = unique(sites$site))),
+                                        choices = unique(sites_renamed$Site))),
                          mainPanel('Output',
                                    tableOutput(outputId = 'table'),
                                    'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
@@ -236,11 +243,40 @@ server <- function(input, output) {
   output$coral_plot <- renderPlot({
 
     ggplot(bomm_reactive(), aes(fill = bommie_loc, y = avg_perc_dead , x = site)) +
-      geom_bar(position = "stack", stat = "identity")
+      geom_bar(position = "stack", stat = "identity") + 
+      theme_minimal() + 
+      labs(x = "Site Number", y = "Counts", fill = "Location on Bommie") +
+      scale_fill_manual(values = c("lightblue", "#A7D0D9", "#FDE4E0", "#E1FFFF", "#E5E6FB")) + 
+      theme(axis.text.x = element_text(family = "Tahoma",
+                                       face = "bold", 
+                                       colour = "white",
+                                       size =15),
+            axis.text.y = element_text(family = "Tahoma",
+                                       face = "bold", 
+                                       colour = "white",
+                                       size =15),
+            axis.title.y = element_text(family = "Tahoma",
+                                        face = "bold", 
+                                        colour = "white",
+                                        size =15),
+            axis.title.x = element_text(family = "Tahoma",
+                                        face = "bold", 
+                                        colour = "white",
+                                        size =15),
+            legend.title = element_text(family = "Tahoma",
+                                       face = "bold", 
+                                       colour = "white",
+                                       size =15),
+            legend.text = element_text(family = "Tahoma",
+                        face = "bold", 
+                        colour = "white",
+                        size =15
+              ) )
+    
     
 ## change bomm_reactive() back to site_bom to get all the columns back    
 
-  })
+  }, bg = "transparent")
   
   
   output$coral_pie <- renderPlot({
@@ -318,8 +354,8 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
 
 site_reactive <- reactive({
   message('in site_reactive, input$site_select = ', input$site_select) 
-  sites %>% 
-    filter(site == input$site_select)
+  sites_renamed %>% 
+    filter(Site == input$site_select)
 })
 
 output$table <- renderTable({
