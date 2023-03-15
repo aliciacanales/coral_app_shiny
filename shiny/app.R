@@ -137,6 +137,8 @@ my_theme <- bs_theme(
   base_font = font_google('Lexend')
 )
 
+### Begin user interface
+
 ui <- fluidPage(theme = my_theme,
                 tags$h2('Moorea Coral App'),
                 setBackgroundImage(
@@ -217,7 +219,8 @@ ui <- fluidPage(theme = my_theme,
                 
 ))
 
-# Server for histogram
+### Server and reactives
+
 server <- function(input, output) {
   
   coral_reactive <- reactive({
