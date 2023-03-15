@@ -21,9 +21,6 @@ library(tidymodels)
 library(jtools)
 library(tidyr)
 library(RColorBrewer)
-# library(dplyr)
-# library(ggplot2)
-# library(moonBook)
 
 ## Reading in data
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
@@ -206,8 +203,8 @@ ui <- fluidPage(theme = my_theme,
                                    'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
                 tabPanel('Citation',
                          mainPanel(
-                           h3("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
-                           h4("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data.")
+                           h5("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
+                           h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data.")
                          ))
                 
 ))
@@ -222,8 +219,11 @@ server <- function(input, output) {
 
 #data = coral_reactive(),
   output$coral_plot <- renderPlot({
-  plot_output <- PieDonut(bom_dead, aes(bommie_loc, avg_perc_dead, count = n), 
-  title = "pie")
+    slices <- c(0, 12.9, 26.4, 34.9, 25.8)
+    lbls <- c("bottom", "inside", "side", "top", "under")
+    pie(slices, labels=lbls, main="Pie Chart of bommies") + 
+      scale_fill_manual(values = c("#D2D0C3", "#A0D3F2", "#8DC3F2", "#74C6DB", "#6F9ABF")) + 
+      theme_minimal() 
     
     # ggplot(coral_reactive(), aes(x = bommie_loc, y = n)) +
     #   geom_bar(color = "lightblue") +
