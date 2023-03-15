@@ -24,7 +24,8 @@ library(RColorBrewer)
 
 ## Reading in data
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
-  mutate(date = ymd(date))
+  mutate(date = ymd(date)) %>% 
+  mutate(site = as.integer(site))
 
 poc_acr <- coral %>%
   filter(genus %in% c('poc', 'acr')) %>% 
@@ -166,10 +167,11 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Chart',
                                     sidebarLayout(
                                       sidebarPanel("Site",
-                                                   checkboxGroupInput(inputId = 'plot_coral',
+                                                   checkboxGroupInput(inputId = 'site_coral',
                                                                       label = 'Choose Site Number',
-                                                                      choices = unique(coral$site),
+                                                                      choices = unique(site_bom$site),
                                                                       selected = 120
+                                                                      
                                       # sidebarPanel("Genus",
                                       #              checkboxGroupInput(inputId = 'pick_site',
                                       #                                 label = 'Choose species',
@@ -211,8 +213,7 @@ ui <- fluidPage(theme = my_theme,
                          sidebarPanel(
                            selectInput(inputId = 'site_select',
                                         label = "Choose Site",
-                                        choices = unique(sites$site),
-                                        selected = unique(sites$site) [1])),
+                                        choices = unique(sites$site))),
                           # prettyCheckbox(inputId = 'site_select', 
                           # label = "Choose Site", 
                           # choices = unique(sites$site),
@@ -238,9 +239,12 @@ ui <- fluidPage(theme = my_theme,
 
 server <- function(input, output) {
   
-  coral_reactive <- reactive({
-  plot_counts %>% 
-      filter(plot == input$coral_plot)
+  # coral_reactive <- reactive({
+  # plot_counts %>% 
+  #     filter(plot == input$plot_coral)
+    bomm_reactive <- reactive({   
+    site_bom %>% 
+      filter(site == input$site_coral)
   }) # end of tab 1
 
 #data = coral_reactive(),
@@ -253,10 +257,12 @@ server <- function(input, output) {
   # })
   
   output$coral_plot <- renderPlot({
-    ggplot(site_bom, aes(fill = bommie_loc, y = avg_perc_dead , x = site)) +
-      geom_bar(position = "stack", stat = "identity") 
-    # + tooltip(x, "avg_perc_dead") -- have to convert it to a ggplotly to make this work (the hover bar)
-      
+
+    ggplot(bomm_reactive(), aes(fill = bommie_loc, y = avg_perc_dead , x = site)) +
+      geom_bar(position = "stack", stat = "identity")
+    
+## change bomm_reactive() back to site_bom to get all the columns back    
+
   })
     
   output$coral_pie <- renderPlot({
@@ -314,7 +320,7 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
 # Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
 
 site_reactive <- reactive({
-  message("in site_reactive, input$site_select = ", input$site_select)
+  message('in site_reactive, input$site_select = ', input$site_select) 
   sites %>% 
     filter(site == input$site_select)
 })
