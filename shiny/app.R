@@ -174,14 +174,14 @@ ui <- fluidPage(theme = my_theme,
                                     )),
                            tabPanel('Bommie Info',
                                     sidebarLayout(
-                                      sidebarPanel("Site",
+                                      sidebarPanel(
                                                    checkboxGroupInput(inputId = 'site_coral',
                                                                       label = 'Choose Site Number',
                                                                       choices = unique(site_bom$site),
                                                                       selected = 120
                                                    )
                                       ),
-                                      mainPanel("Plot information",
+                                      mainPanel(h4("Coral Distribution on Bommies by Site"),
                                                 plotOutput('coral_plot'),
                                                 plotOutput('coral_pie')
                                       )
@@ -189,7 +189,7 @@ ui <- fluidPage(theme = my_theme,
                            ),
                            tabPanel('Predict Coral Species!',
                                     sidebarLayout( position = 'left',
-                                     sidebarPanel(
+                                     sidebarPanel(h4("Enter Values:"),
                                       textInput(inputId = "site",
                                        label = "Site Number"),
                                       textInput(inputId = "length",
@@ -199,31 +199,32 @@ ui <- fluidPage(theme = my_theme,
                                       submitButton("Analyze!"),
                                       'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
                            
-                                    mainPanel('Coral Species Prediction',
+                                    mainPanel(h4('Which Species is it?'),
                            plotOutput('bar')),
                            
                 )),
                            
-                           tabPanel('Moorea Map',
+                           tabPanel('Site Map',
                                   sidebarLayout(position = 'right',  
                                     sidebarPanel(
                                                  "This map shows the sites along the island of Moorea that is part of French Polynesia's Society Islands archipelago. Each point displays the site number and the dominant genus' total number of individuals. These sites are important to examine individually to pinpoint where restoration efforts are most needed."),
-                                    mainPanel('Location Sites along Moorea',
+                                    mainPanel(h4('Location Sites along Moorea'),
                                               plotlyOutput('map')))
                            ),
-                tabPanel('Table',
+                tabPanel('Coral Health',
                         sidebarLayout(position = "left",
                          sidebarPanel(
                            selectInput(inputId = 'site_select',
                                         label = "Choose Site",
                                         choices = unique(sites_renamed$Site))),
-                         mainPanel('Output',
+                         mainPanel(h4("How Dead are We Talkin'?"),
                                    tableOutput(outputId = 'table'),
                                    'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
                 tabPanel('Citation',
                          mainPanel(
                            h5("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
-                           h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."), 
+                           h5("**Meta Data Info Here**"),
+                           h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
                             h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay')
                          ))
                 
