@@ -22,6 +22,7 @@ library(jtools)
 library(tidyr)
 library(RColorBrewer)
 
+
 ## Reading in data
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date)) %>% 
@@ -143,7 +144,7 @@ coral_fitted <- coral_blr1 %>%
 
 my_theme <- bs_theme(
   bg = 'lightblue',
-  fg = 'white', #color of font
+  fg = 'white', 
   primary = 'white',
   base_font = font_google('Lexend')
 )
@@ -171,11 +172,6 @@ ui <- fluidPage(theme = my_theme,
                                                                       label = 'Choose Site Number',
                                                                       choices = unique(site_bom$site),
                                                                       selected = 120
-                                                                      
-                                      # sidebarPanel("Genus",
-                                      #              checkboxGroupInput(inputId = 'pick_site',
-                                      #                                 label = 'Choose species',
-                                      #                                 choices = c('Pocillopora (POC)' = 'poc', 'Acropora (ACR)' = 'acr', 'Undetermined (NA)' = 'NA')
                                                    )
                                       ),
                                       mainPanel("Plot information",
@@ -196,7 +192,7 @@ ui <- fluidPage(theme = my_theme,
                                       submitButton("Analyze!"),
                                       'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
                            
-                                    mainPanel('Prediction Results',
+                                    mainPanel('Coral Species Prediction',
                            plotOutput('bar')),
                            
                 )),
@@ -214,15 +210,6 @@ ui <- fluidPage(theme = my_theme,
                            selectInput(inputId = 'site_select',
                                         label = "Choose Site",
                                         choices = unique(sites$site))),
-                          # prettyCheckbox(inputId = 'site_select', 
-                          # label = "Choose Site", 
-                          # choices = unique(sites$site),
-                          # selected = "134", 
-                          # thick = TRUE,
-                          # animation = "pulse",
-                          # status = "info")
-                          # )),
-                         # ),
                          mainPanel('Output',
                                    tableOutput(outputId = 'table'),
                                    'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
@@ -239,22 +226,12 @@ ui <- fluidPage(theme = my_theme,
 
 server <- function(input, output) {
   
-  # coral_reactive <- reactive({
-  # plot_counts %>% 
-  #     filter(plot == input$plot_coral)
+  ## Bommie location chart -- we want stacked bar plots to compare sites 
     bomm_reactive <- reactive({   
+      message('in bomm_reactive, input$site_coral = ', input$site_coral)  
     site_bom %>% 
       filter(site == input$site_coral)
   }) # end of tab 1
-
-#data = coral_reactive(),
-  # output$coral_plot <- renderPlot({
-  #   g <- ggplot(site_bom, aes(site))
-  #   g + geom_bar(aes(fill=bommie_loc), width = 0.5) + 
-  #     theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
-  #     labs(title="Bommie Locs", 
-  #          subtitle="pls work")  
-  # })
   
   output$coral_plot <- renderPlot({
 
@@ -264,13 +241,14 @@ server <- function(input, output) {
 ## change bomm_reactive() back to site_bom to get all the columns back    
 
   })
-    
+  
+  
   output$coral_pie <- renderPlot({
       slices <- c(0, 12.9, 26.4, 34.9, 25.8)
-      lbls <- c("bottom", "inside", "side", "top", "under")
-      pie(slices, labels=lbls, main="Average Percent of Corals Bleached at each Bommie Location") +
-        theme_minimal() 
-  },  bg = "transparent")
+      lbls <- c("Bottom - 0%", "Inside - 12.9%", "Side - 26.4%", "Top - 34.9%", "Under - 25.4%")
+      pie(slices, labels = lbls, main = "Average Percent of Corals Bleached at each Bommie Location")+ 
+        theme_minimal()
+     })
   
      # end of coral plot
   
@@ -288,12 +266,14 @@ server <- function(input, output) {
                                             )) +
         coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
        guides(col= guide_legend(title= "Location Site"))
-     
-      
+
     })  # end of map server, end of plotly
 
-      
+ ## Start of predictor tab     
 user_df <- reactive({
+  message('in user_df, input$site = ', input$site) 
+  message('in user_df, input$length = ', input$length)
+  message('in user_df, input$width = ', input$width) 
   data.frame(
     site = as.numeric(input$site),
     length = as.numeric(input$length),
@@ -306,18 +286,35 @@ output$bar <- renderPlot({
     color <- c("cyan", "coral")
     df <- tribble(
       ~ species,     ~ prob,
-      'pocillopora', pred,
-      'acropora',  1- pred)
+      'Pocillopora', pred,
+      'Acropora',  1- pred) 
+##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
     
    
 ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
-  geom_col() +
-  theme_minimal()
+  theme_minimal() + 
+  labs(x = "Species", y = "Probability") +
+  theme(axis.text.x = element_text(family = "Tahoma",
+                                   face = "bold", 
+                                   colour = "white",
+                                   size =15),
+        axis.text.y = element_text(family = "Tahoma",
+                                   face = "bold", 
+                                   colour = "white",
+                                   size =15),
+        axis.title.y = element_text(family = "Tahoma",
+                                   face = "bold", 
+                                     colour = "white",
+                                    size =15),
+        axis.title.x = element_text(family = "Tahoma",
+                                    face = "bold", 
+                                    colour = "white",
+                                  size =15)) 
      
-   })
+   },  bg = "transparent")
 # end of predictor server
 
-# Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
+# Table Tab -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
 
 site_reactive <- reactive({
   message('in site_reactive, input$site_select = ', input$site_select) 
@@ -330,16 +327,6 @@ site_reactive()
   })
 
 }
-
-
-  ### Tab 2
-  
-  ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
-  
-  # output$coral_map <- renderPlot(plotOutput(coral_map))
-    
-   # end of histogram server
-
 
 
 # Run the application 
