@@ -283,6 +283,7 @@ ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
      
    })
 # end of predictor server
+
 # Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
 
 site_reactive <- reactive({
@@ -298,8 +299,6 @@ site_reactive()
 }
 
 
-
-
   ### Tab 2
   
   ## we don't need to create a new subset - we add them within the pink {} and then up in the tabs we reference the output that we want displayed on each tab
@@ -307,8 +306,6 @@ site_reactive()
   # output$coral_map <- renderPlot(plotOutput(coral_map))
     
    # end of histogram server
-
-
 
 
 
