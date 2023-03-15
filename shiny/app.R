@@ -254,7 +254,9 @@ server <- function(input, output) {
   
   output$coral_plot <- renderPlot({
     ggplot(site_bom, aes(fill = bommie_loc, y = avg_perc_dead , x = site)) +
-      geom_bar(position = "stack", stat = "identity")
+      geom_bar(position = "stack", stat = "identity") 
+    # + tooltip(x, "avg_perc_dead") -- have to convert it to a ggplotly to make this work (the hover bar)
+      
   })
     
   output$coral_pie <- renderPlot({
