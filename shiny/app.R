@@ -152,14 +152,17 @@ my_theme <- bs_theme(
 ui <- fluidPage(theme = my_theme,
                 tags$h2('Moorea Coral App'),
                 setBackgroundImage(
-                  src = 'https://c4.wallpaperflare.com/wallpaper/927/873/113/corals-fishes-rays-sea-wallpaper-preview.jpg'
+                  src = 'https://images.unsplash.com/photo-1507166763745-bfe008fbb831?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
                 ),
                 navbarPage("Coral Across Northshore Moorea",
                            tabPanel('About',
                                     mainPanel(
                                       h1('Overview of the Study'),
                                       h5("This shiny app showcases the resilience of Moorea's outer reef communities to changing ocean conditions over the past decade, despite the acidic ocean conditions and rising ocean temperatures. The app provides data from coral surveys conducted in the Northshore lagoon in Moorea, where 5 5x5m transects were set up at 16 sites to measure branching (pocillopora and Acropora) corals' lengths and available settlement space in each plot. The app aims to help understand the spatial distribution of coral taxa and size structure to further understand community dynamics and identify areas of efficient out-planting sites and optimal habitat for restoration efforts that are in Moorea. The study suggests that the recovery of outer reef coral communities around Moorea may include an increased capacity to respond to future conditions due to the diversity of coral recruits, at least among pocillopora species."),
-                                      h6('Alicia Canales, Danielle Hoekstra, Kat Mackay')
+                                      h6('Alicia Canales, Danielle Hoekstra, Kat Mackay'),
+                                      img(src='https://reefbuilders.com/wp-content/blogs.dir/1/files/2019/07/Acropora-anthocercis-2-770x510.jpg', height = "200px", width = "300px", tags$figcaption("Acropora")),
+                                      img(src = "https://media.istockphoto.com/id/1333638431/photo/pocillopora-damicornis-pink-colorful-sps-coral-in-red-sea-underwater-scene.jpg?s=612x612&w=0&k=20&c=2MPGelRPoVE92rs6smWFHFFviGl8dJ_TqkRjQSRNp20=", height = '200px', width = '300px', tags$fig.caption("Pocillopora")), 
+                                      
                                     )),
                            tabPanel('Chart',
                                     sidebarLayout(
@@ -257,9 +260,9 @@ server <- function(input, output) {
   output$coral_pie <- renderPlot({
       slices <- c(0, 12.9, 26.4, 34.9, 25.8)
       lbls <- c("bottom", "inside", "side", "top", "under")
-      pie(slices, labels=lbls, main="Pie Chart of bommies") +
-        theme_minimal()
-  })
+      pie(slices, labels=lbls, main="Average Percent of Corals Bleached at each Bommie Location") +
+        theme_minimal() 
+  },  bg = "transparent")
   
      # end of coral plot
   
