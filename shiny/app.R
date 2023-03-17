@@ -52,18 +52,6 @@ counts_na_ng <- coral %>%
   count(site) %>% 
   rename("total_n" = n)
 
-lat_lon_cor <- coral %>% 
-  select(site, lat, long) %>% 
-  merge(counts_na_ng, by = ('site')) %>% 
-  unique()
-
-garden_counts <- coral %>% 
-  select(genus, site, garden) %>%
-  mutate(garden = as.factor(garden)) %>%
-  group_by(genus) %>%
-  count(site, garden) %>% 
-  filter(garden == 'Y')
-
 gc <- garden_counts %>% 
   select(site, genus, n)
 
@@ -96,6 +84,19 @@ plot_counts <- coral %>%
   mutate(bommie_loc = ifelse(is.na(bommie_loc), 'Undetermined', bommie_loc))
 
 plot_counts$bommie_loc[plot_counts$bommie_loc == 'N/A'] <- 'Undetermined'
+
+### For the reactive map :
+lat_lon_cor <- coral %>% 
+  select(site, lat, long) %>% 
+  merge(counts_na_ng, by = ('site')) %>% 
+  unique()
+
+garden_counts <- coral %>% 
+  select(genus, site, garden) %>%
+  mutate(garden = as.factor(garden)) %>%
+  group_by(genus) %>%
+  count(site, garden) %>% 
+  filter(garden == 'Y')
 
 ### Location data:
 comb_coral <- counts %>% 
