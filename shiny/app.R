@@ -175,7 +175,7 @@ ui <- fluidPage(theme = my_theme,
                                         checkboxGroupInput(inputId = 'site_coral',
                                                            label = 'Choose Site Number',
                                                            choices = unique(site_bom$site),
-                                                           selected = 120
+                                                           selected = unique(site_bom$site)
                                                            
                                         ), 'In this tab, we have created graphics to compare the locations of the coral along bommies. This information will be useful to determine the likelihood of survival during restoration based on their placement. Check multiple sites to compare the survival rates!'
                                       ),
@@ -204,11 +204,14 @@ ui <- fluidPage(theme = my_theme,
                                     sidebarLayout(position = 'left', 
                                                   sidebarPanel(
                                                                   textInput(inputId = "site", 
-                                                                            label = "Site Number"), 
+                                                                            label = "Site Number",
+                                                                            value = 120), 
                                                                   textInput(inputId = "length",
-                                                                            label = "Length (mm)"),
+                                                                            label = "Length (mm)",
+                                                                            value = 9.9),
                                                                   textInput(inputId = "width", 
-                                                                            label = "Width (mm)"), 
+                                                                            label = "Width (mm)",
+                                                                            value = 12.1), 
                                                                   'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
                                                   mainPanel(h4('Which Species is it?'),
                                                             plotOutput('bar')))),
