@@ -215,7 +215,7 @@ ui <- fluidPage(theme = my_theme,
                                                   sidebarPanel(
                                                     "This map shows the sites along the island of Moorea that is part of French Polynesia's Society Islands archipelago. Each point displays the site number and the dominant genus' total number of individuals. These sites are important to examine individually to pinpoint where restoration efforts are most needed."),
                                                   mainPanel(h4('Location Sites along Moorea'),
-                                                            plotlyOutput('map')))
+                                                            leafletOutput('coral_map')))
                            ),
                            tabPanel('Coral Health',
                                     sidebarLayout(position = "left",
@@ -297,12 +297,27 @@ server <- function(input, output) {
       ) + geom_sf(highlight_location(), data = comb_coral2, aes(color = site,
                                           label = genus,
                                           text = paste("Total Count", n)
-      )) +
-      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) 
+      )) 
+   #  +
+   #    coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
    #    guides(col= guide_legend(title= "Location Site")) -> gg_layer
    #  gg_layer <- gg_layer +geom_point(data = highlight_location(), colour = 'red', size =4)
    # 
    # gg_layer
+  
+   hightlight_location <- reactive({
+     counts_na %>% 
+       filter(site %in% input$location)
+   })
+    
+   output$coral_map <-renderLeaflet({
+     leaflet(data = highlight_location() %>% 
+               addProviderTiles(providers$OpenTopoMap) %>% 
+               setView(lat = c(-149.70,-149.95), lng = c(-17.42,-17.62), zoom = 7) %>% 
+               addTiles() %>% 
+               addMarkers(~x,~y, popup = ~site, label = ~site)
+     )
+   })
      
     
   })  # end of map server, end of plotly
