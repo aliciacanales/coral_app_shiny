@@ -336,9 +336,7 @@ server <- function(input, output) {
       'Pocillopora', pred,
       'Acropora',  1- pred) 
     ##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
-    
-    
-    ggplot(df, x=1, aes(x = species, y = prob, fill = species)) +
+  ggplot(df, x=1, aes(x = species, y = prob, fill = species)) +
       theme_minimal() + 
       labs(x = "Species", y = "Probability") +
       theme(axis.text.x = element_text(family = "Tahoma",
