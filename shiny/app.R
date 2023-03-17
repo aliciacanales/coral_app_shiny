@@ -23,7 +23,7 @@ library(DT)
 library(htmltools)
 
 
-## Reading in data
+## Reading in data and and initial wrangling:
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date)) %>% 
   mutate(site = as.integer(site))
@@ -41,7 +41,7 @@ counts <- new_coral %>%
   group_by(genus) %>%
   count(site)
 
-### Site Table Wrangling 
+### Site table wrangling: 
 counts_na <- coral %>%
   group_by(genus) %>%
   count(site) %>% 
@@ -55,8 +55,6 @@ lat_lon_cor <- coral %>%
   select(site, lat, long) %>% 
   merge(counts_na_ng, by = ('site')) %>% 
   unique()
-
-
 
 garden_counts <- coral %>% 
   select(genus, site, garden) %>%
@@ -89,7 +87,6 @@ sites_renamed <- sites %>%
          "Number_in_Garden" = in_garden,
          "Total_Observations" = total_n)
 
-### Tab 2
 plot_counts <- coral %>% 
   select(plot, genus, bommie_loc) %>% 
   group_by(plot) %>% 
@@ -99,8 +96,7 @@ plot_counts <- coral %>%
 
 plot_counts$bommie_loc[plot_counts$bommie_loc == 'N/A'] <- 'Undetermined'
 
-### Locations
-
+### Location data:
 comb_coral <- counts %>% 
   merge(new_coral, by = c('site', 'genus')) %>% 
   unique() %>% 
@@ -110,7 +106,6 @@ location <- rio::import(here('data','coral_data_244_akd.xls'))
 
 comb_coral2 <- st_as_sf(comb_coral, coords = c('long', 'lat'),
                         crs = 4326)
-
 
 fp<-read_sf(here::here("data","xg569rm6446.shp")) %>%
   filter(hasc_1=="PF.WI") %>%
@@ -123,8 +118,7 @@ coral_map <- ggplot(data=fp)+
     location = "bl",
     width_hint = 0.2)
 
-### bommie location plot data
-
+### Bommie location plot data wrangling:
 bom_dead <- coral %>% 
   select(genus, bommie_loc, perc_dead) %>% 
   group_by(bommie_loc) %>% 
@@ -139,7 +133,6 @@ bommie_plot <- bom_dead %>%
   theme_minimal() +
   labs(x = 'Bommie Location', y = 'Average % Dead')
 
-##### number of observations at each bommie location per site
 site_bom <- coral %>% 
   select(site, bommie_loc, perc_dead) %>% 
   group_by(site, bommie_loc) %>% 
@@ -149,21 +142,20 @@ site_bom <- coral %>%
   rename("n" = sum_of_runs, "avg_perc_dead" = average_of_perc_dead) %>% 
   mutate(site = as.factor(site))
 
-### Binary Logistic Regression model
-
+### Binary Logistic Regression model:
 f1 <- genus ~ length * width * site
 coral_blr1 <- glm(formula = f1, data = poc_acr, 
                   family = 'binomial') 
 coral_tidy <- tidy(coral_blr1)
-
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
-metadata <- read_csv(here("data", "coral_metadata.csv"))
-
+### Metadata:
+metadata <- read_csv(here("data", "coral_metadata.csv")) %>% 
+  rename("Description" = ...2)
 meta_kable <- knitr::kable(metadata)  
 
-
+### Theme:
 my_theme <- bs_theme(
   bg = 'lightblue',
   fg = 'white', 
@@ -171,7 +163,7 @@ my_theme <- bs_theme(
   base_font = font_google('Lexend')
 )
 
-### Begin user interface
+### Begin user interface:
 
 ui <- fluidPage(theme = my_theme,
                 tags$h2('Moorea Coral App'),
@@ -244,23 +236,30 @@ ui <- fluidPage(theme = my_theme,
                                                             'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
                            tabPanel('Citation',
                                     mainPanel(
-                                      h5("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
-                                      h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
-                                      h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
+                                      h4("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
+                                      h5("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
+                                      h5('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
+                                      h6("Images sourced from:"),
+                                      h6("Igor Malakhov. (2021). Pocillopora Damicornis pink colorful SPS coral in Red Sea underwater scene [Photograph]. Retrieved from https://media.istockphoto.com/id/1333638431/photo/pocillopora-damicornis-pink-colorful-sps-coral-in-red-sea-underwater-scene.jpg?s=612x612&w=0&k=20&c=2MPGelRPoVE92rs6smWFHFFviGl8dJ_TqkRjQSRNp20="),
+                                      h6("Michael Luenen. (2017). Underwater view of a coral reef with colorful fish [Photograph]. Retrieved from https://images.unsplash.com/photo-1507166763745-bfe008fbb831?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"),
+                                      h6("Noa Shenkar. (2014). Acropora globiceps Maldives.jpg [Photograph]. Retrieved from https://upload.wikimedia.org/wikipedia/commons/3/34/Acropora_globiceps_Maldives.jpg"),
+                                      
                                       DTOutput('meta')
                                     ))
                            ))   
 
-### Server and reactives
+### Begin rerver and reactives:
 
 server <- function(input, output) {
   
-  ## Bommie location chart -- we want stacked bar plots to compare sites 
+  ### Bommie location analysis chart:
   bomm_reactive <- reactive({   
     message('in bomm_reactive, input$site_coral = ', input$site_coral)  
     site_bom %>% 
       filter(site %in% input$site_coral)
-  }) # end of tab 1
+  }) ### End of bommie location chart
+
+  ###Coral plot
   
   output$coral_plot <- renderPlot({
     
@@ -278,11 +277,7 @@ server <- function(input, output) {
                                        face = "bold",
                                        colour = "white",
                                        size =15)
-)
-
-    
-    
-    ## change bomm_reactive() back to site_bom to get all the columns back    
+) 
     
   }, bg = "transparent")
   
@@ -291,51 +286,17 @@ server <- function(input, output) {
     lbls <- c("Bottom - 0%", "Inside - 12.9%", "Side - 26.4%", "Top - 34.9%", "Under - 25.4%")
     pie(slices, labels = lbls, main = "Average Percent of Corals Bleached at each Bommie Location")+ 
       theme_minimal()
-  })
+  }) ### End of coral plot
   
-  # end of coral plot
-  # highlight_location <- reactive({
-  #   site_data <- subset(comb_coral2, site_number == input$site)
-  #   location <- list(lat = site_data$lat,
-  #                    lon = site_data$lon)
-  #   location
-  # })
-  # 
-  # output$map <- renderPlotly({
-  #   ggplot(data=fp) +
-  #     geom_sf() +
-  #     theme_minimal() +
-  #     coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
-  #     annotation_scale(
-  #       location = "bl",
-  #       width_hint = 0.2
-  #     ) + geom_sf(data = comb_coral2, aes(color = site,
-  #                                         label = genus,
-  #                                         text = paste("Total Count", n)
-  #     )) 
-   #  +
-   #    coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
-   #    guides(col= guide_legend(title= "Location Site")) -> gg_layer
-   #  gg_layer <- gg_layer +geom_point(data = highlight_location(), colour = 'red', size =4)
-   # 
-   # gg_layer
   
    highlight_location <- reactive({
      lat_lon_cor %>% 
        filter(site %in% input$location)
    })
-    
-   # output$coral_map <-renderLeaflet({
-   #   leaflet(highlight_location() %>% 
-   #             addProviderTiles(providers$OpenTopoMap) %>% 
-   #             setView(-149.70, -17.42, zoom = 7) %>% 
-   #             addTiles() %>% 
-   #             addMarkers(data = highlight_location())
-   
+
    output$coral_map <-renderLeaflet({
      content <- paste(sep = "Number of Corals")
     
-     
      leaflet() %>% 
                addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
                addCircleMarkers(data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
@@ -344,24 +305,12 @@ server <- function(input, output) {
                             "<br>Number of Corals: ", 
                             htmlEscape(lat_lon_cor$total_n)
                           )
-               ) 
-             
-             
-     
+               )
    })
-   #    )) +
-   #    coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
-   #    guides(col= guide_legend(title= "Location Site")) -> gg_layer
-   #  
-   #  
-   #  gg_layer <- gg_layer +geom_point(data = highlight_location(), color = 'red', size =4)
-   # gg_layer
-   # 
-   #   
-    
-  # })  # end of map server, end of plotly
+
   
-  ## Start of predictor tab     
+  ### Start of predictor tab 
+   
   user_df <- reactive({
     message('in user_df, input$site = ', input$site) 
     message('in user_df, input$length = ', input$length)
@@ -379,7 +328,7 @@ server <- function(input, output) {
       ~ species,     ~ prob,
       'Pocillopora', pred,
       'Acropora',  1 - pred) 
-    ##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
+    
   ggplot(df, x=1, aes(x = species, y = prob, fill = species)) +
     geom_col() +
     scale_fill_manual(values = c("#A7D0D9", "#E5E6FB")) +
@@ -397,12 +346,11 @@ server <- function(input, output) {
           
     ) 
        
-
   },  bg = "transparent")
-  # end of predictor server
   
-  # Table Tab -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached
+  ### End of predictor server
   
+  ### Table Tab:
   site_reactive <- reactive({
     message('in site_reactive, input$site_select = ', input$site_select) 
     sites_renamed %>% 
@@ -413,25 +361,29 @@ server <- function(input, output) {
     site_reactive()
   })
   
-  
   output$meta <- renderTable({
     site_reactive(metadata)
   })
   
+  ### Citation Tab:
   output$meta = renderDT({
-    datatable(metadata) %>% 
+    datatable(metadata,
+                options = list(dom = 'tip', searchHighlight = TRUE),
+                style = 'bootstrap',
+                class = 'cell-border stripe',
+                filter = 'top',
+                rownames = FALSE) %>% 
       formatStyle(
         searchHighlight = TRUE,
-        columns = c("Metadata", "...2"),
-        backgroundColor = "white")
+        columns = c("Metadata", "Description"),
+        color = "darkgrey",
+        background = "white")
   })
-  
-
   
 }
 
 
-# Run the application 
+### Run the application: 
 shinyApp(ui = ui, server = server)
 
 
