@@ -187,21 +187,32 @@ ui <- fluidPage(theme = my_theme,
                                       )
                                     ) 
                            ),
+                           # tabPanel('Predict Coral Species!',
+                           #          sidebarLayout( position = 'left',
+                           #                         sidebarPanel(h4("Enter Values:"),
+                           #                                      textInput(inputId = "site",
+                           #                                                label = "Site Number"),
+                           #                                      textInput(inputId = "length",
+                           #                                                label = "Length"),
+                           #                                      textInput(inputId = "width",
+                           #                                                label = "Width"),
+                           #                                      'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
+                           #                         
+                           #                         mainPanel(h4('Which Species is it?'),
+                           #                                   plotOutput('bar')),
+                           #                         
+                           #          )),
                            tabPanel('Predict Coral Species!',
-                                    sidebarLayout( position = 'left',
-                                                   sidebarPanel(h4("Enter Values:"),
-                                                                textInput(inputId = "site",
-                                                                          label = "Site Number"),
-                                                                textInput(inputId = "length",
-                                                                          label = "Length"),
-                                                                textInput(inputId = "width",
-                                                                          label = "Width"),
-                                                                'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
-                                                   
-                                                   mainPanel(h4('Which Species is it?'),
-                                                             plotOutput('bar')),
-                                                   
-                                    )),
+                                    sidebarLayout(position = 'left', 
+                                                  sidebarPanel(
+                                                                  textInput(inputId = "site", 
+                                                                            label = "Site Number"), 
+                                                                  textInput(inputId = "length",
+                                                                            label = "Length (mm)"),
+                                                                  textInput(inputId = "width", 
+                                                                            label = "Width (mm)"), 
+                                                                  'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
+                                                  mainPanel(plotOutput('bar')),
                            
                            tabPanel('Site Map',
                                     sidebarLayout(position = 'right',  
@@ -227,7 +238,7 @@ ui <- fluidPage(theme = my_theme,
                                       h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay')
                                     ))
                            
-                ))
+                ))))
 
 ### Server and reactives
 
@@ -327,7 +338,7 @@ server <- function(input, output) {
     ##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
     
     
-    ggplot(df, x = 1, aes(x = species, y = prob, fill = species)) +
+    ggplot(df, x=1, aes(x = species, y = prob, fill = species)) +
       theme_minimal() + 
       labs(x = "Species", y = "Probability") +
       theme(axis.text.x = element_text(family = "Tahoma",
@@ -345,7 +356,15 @@ server <- function(input, output) {
             axis.title.x = element_text(family = "Tahoma",
                                         face = "bold", 
                                         colour = "white",
-                                        size =15)) 
+                                        size =15), 
+    legend.title = element_text(family = "Tahoma",
+                                face = "bold", 
+                                colour = "white",
+                                size =15),
+    legend.text = element_text(family = "Tahoma",
+                               face = "bold", 
+                               colour = "white",
+                               size =15))
     
   },  bg = "transparent")
   # end of predictor server
