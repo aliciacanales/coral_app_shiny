@@ -1,6 +1,3 @@
-## Tab 1 -- 
-## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
-
 
 library(tidyverse)
 library(shiny)
