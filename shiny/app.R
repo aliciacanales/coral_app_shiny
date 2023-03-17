@@ -188,8 +188,7 @@ ui <- fluidPage(theme = my_theme,
                                       mainPanel(h4("Coral Distribution on Bommies by Site"),
                                                 plotOutput('coral_plot'),
                                                 plotOutput('coral_pie')
-                                      )
-                                    ) 
+                                      )) 
                            ),
                            tabPanel('Predict Coral Species!',
                                     sidebarLayout(position = 'left', 
@@ -263,15 +262,35 @@ server <- function(input, output) {
             axis.text.y = element_text(family = "Tahoma",
                                        face = "bold",
                                        colour = "white",
+<<<<<<< HEAD
                                        size =15)
 
             ) 
+=======
+                                       size =15),
+            axis.title.y = element_text(family = "Tahoma",
+                                        face = "bold", 
+                                        colour = "white",
+                                        size =15),
+            axis.title.x = element_text(family = "Tahoma",
+                                        face = "bold", 
+                                        colour = "white",
+                                        size =15),
+            legend.title = element_text(family = "Tahoma",
+                                        face = "bold", 
+                                        colour = "white",
+                                        size =15),
+            legend.text = element_text(family = "Tahoma",
+                                       face = "bold", 
+                                       colour = "white",
+                                       size =15
+            ))
+>>>>>>> e9ab1f725567cba225c2e50f3b2c3e528d9812a6
     
     
     ## change bomm_reactive() back to site_bom to get all the columns back    
     
   }, bg = "transparent")
-  
   
   output$coral_pie <- renderPlot({
     slices <- c(0, 12.9, 26.4, 34.9, 25.8)
@@ -350,7 +369,6 @@ server <- function(input, output) {
   output$table <- renderTable({
     site_reactive()
   })
-  
   
   output$meta <- renderTable({
     site_reactive(metadata)
