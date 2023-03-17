@@ -255,31 +255,17 @@ server <- function(input, output) {
       theme_minimal() + 
       labs(x = "Site Number", y = "Counts", fill = "Location on Bommie") +
       scale_fill_manual(values = c("lightblue", "#A7D0D9", "#FDE4E0", "#E1FFFF", "#E5E6FB")) + 
-      theme(axis.text.x = element_text(family = "Tahoma",
-                                       face = "bold", 
+      theme(text = element_text(colour = "white", family = "Tahoma", face = "bold", size = 15),
+        axis.text.x = element_text(family = "Tahoma",
+                                       face = "bold",
                                        colour = "white",
                                        size =15),
             axis.text.y = element_text(family = "Tahoma",
-                                       face = "bold", 
+                                       face = "bold",
                                        colour = "white",
-                                       size =15),
-            axis.title.y = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            axis.title.x = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            legend.title = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            legend.text = element_text(family = "Tahoma",
-                                       face = "bold", 
-                                       colour = "white",
-                                       size =15
-            ) )
+                                       size =15)
+
+            ) 
     
     
     ## change bomm_reactive() back to site_bom to get all the columns back    
@@ -337,30 +323,18 @@ server <- function(input, output) {
     scale_fill_manual(values = c("#A7D0D9", "#E5E6FB")) +
       theme_minimal() + 
       labs(x = "Species", y = "Probability") +
-      theme(axis.text.x = element_text(family = "Tahoma",
-                                       face = "bold", 
-                                       colour = "white",
-                                       size =15),
-            axis.text.y = element_text(family = "Tahoma",
-                                       face = "bold", 
-                                       colour = "white",
-                                       size =15),
-            axis.title.y = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            axis.title.x = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            legend.title = element_text(family = "Tahoma",
-                                face = "bold",
-                                colour = "white",
-                                size =15),
-    legend.text = element_text(family = "Tahoma",
-                               face = "bold",
-                               colour = "white",
-                               size =15))
+    theme(text = element_text(colour = "white", family = "Tahoma", face = "bold", size = 15),
+          axis.text.x = element_text(family = "Tahoma",
+                                     face = "bold",
+                                     colour = "white",
+                                     size =15),
+          axis.text.y = element_text(family = "Tahoma",
+                                     face = "bold",
+                                     colour = "white",
+                                     size =15)
+          
+    ) 
+       
 
   },  bg = "transparent")
   # end of predictor server
