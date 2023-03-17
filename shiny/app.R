@@ -324,7 +324,7 @@ server <- function(input, output) {
     df <- tribble(
       ~ species,     ~ prob,
       'Pocillopora', pred,
-      'Acropora',  1- pred) 
+      'Acropora',  1 - pred) 
     ##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
   ggplot(df, x=1, aes(x = species, y = prob, fill = species)) +
     geom_col() +
