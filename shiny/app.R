@@ -279,6 +279,12 @@ server <- function(input, output) {
   })
   
   # end of coral plot
+  hightlight_location <- reactive({
+    site_data <- subset(comb_coral2, site_number == input$site)
+    location <- list(lat = site_data$lat,
+                     lon = site_data$lon)
+    location
+  })
   
   output$map <- renderPlotly({
     ggplot(data=fp) +
@@ -288,12 +294,16 @@ server <- function(input, output) {
       annotation_scale(
         location = "bl",
         width_hint = 0.2
-      ) + geom_sf(data = comb_coral2, aes(color = site,
+      ) + geom_sf(highlight_location(), data = comb_coral2, aes(color = site,
                                           label = genus,
                                           text = paste("Total Count", n)
       )) +
-      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
-      guides(col= guide_legend(title= "Location Site"))
+      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) 
+   #    guides(col= guide_legend(title= "Location Site")) -> gg_layer
+   #  gg_layer <- gg_layer +geom_point(data = highlight_location(), colour = 'red', size =4)
+   # 
+   # gg_layer
+     
     
   })  # end of map server, end of plotly
   
@@ -356,6 +366,8 @@ server <- function(input, output) {
   output$meta = renderDT(
     metadata, options = list(lengthChange = FALSE)
     )
+  
+
   
 }
 
