@@ -302,7 +302,6 @@ server <- function(input, output) {
     
     
     gg_layer <- gg_layer +geom_point(data = highlight_location(), color = 'red', size =4)
-
    gg_layer
      
     
