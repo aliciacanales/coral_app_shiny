@@ -18,6 +18,7 @@ library(tidymodels)
 library(jtools)
 library(tidyr)
 library(RColorBrewer)
+library(knitr)
 
 
 ## Reading in data
@@ -147,6 +148,9 @@ coral_fitted <- coral_blr1 %>%
 
 metadata <- read_csv("coral_metadata.csv")
 
+meta_kable <- knitr::kable(metadata)  
+  
+
 
 my_theme <- bs_theme(
   bg = 'lightblue',
@@ -229,7 +233,7 @@ ui <- fluidPage(theme = my_theme,
                                       h5("**Meta Data Info Here**"),
                                       h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
                                       h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
-                                      tableOutput(outputId = "meta")
+                                      meta_kable
                                     ))
                            ))   
 
