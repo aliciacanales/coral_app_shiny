@@ -253,31 +253,17 @@ server <- function(input, output) {
       theme_minimal() + 
       labs(x = "Site Number", y = "Counts", fill = "Location on Bommie") +
       scale_fill_manual(values = c("lightblue", "#A7D0D9", "#FDE4E0", "#E1FFFF", "#E5E6FB")) + 
-      theme(axis.text.x = element_text(family = "Tahoma",
-                                       face = "bold", 
+      theme(text = element_text(colour = "white", family = "Tahoma", face = "bold", size = 15),
+        axis.text.x = element_text(family = "Tahoma",
+                                       face = "bold",
                                        colour = "white",
                                        size =15),
             axis.text.y = element_text(family = "Tahoma",
-                                       face = "bold", 
+                                       face = "bold",
                                        colour = "white",
-                                       size =15),
-            axis.title.y = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            axis.title.x = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            legend.title = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            legend.text = element_text(family = "Tahoma",
-                                       face = "bold", 
-                                       colour = "white",
-                                       size =15
-            ))
+                                       size =15)
+)
+
     
     
     ## change bomm_reactive() back to site_bom to get all the columns back    
@@ -292,6 +278,12 @@ server <- function(input, output) {
   })
   
   # end of coral plot
+  hightlight_location <- reactive({
+    site_data <- subset(comb_coral2, site_number == input$site)
+    location <- list(lat = site_data$lat,
+                     lon = site_data$lon)
+    location
+  })
   
   output$map <- renderPlotly({
     ggplot(data=fp) +
@@ -301,12 +293,16 @@ server <- function(input, output) {
       annotation_scale(
         location = "bl",
         width_hint = 0.2
-      ) + geom_sf(data = comb_coral2, aes(color = site,
+      ) + geom_sf(highlight_location(), data = comb_coral2, aes(color = site,
                                           label = genus,
                                           text = paste("Total Count", n)
       )) +
-      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
-      guides(col= guide_legend(title= "Location Site"))
+      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) 
+   #    guides(col= guide_legend(title= "Location Site")) -> gg_layer
+   #  gg_layer <- gg_layer +geom_point(data = highlight_location(), colour = 'red', size =4)
+   # 
+   # gg_layer
+     
     
   })  # end of map server, end of plotly
   
@@ -334,30 +330,18 @@ server <- function(input, output) {
     scale_fill_manual(values = c("#A7D0D9", "#E5E6FB")) +
       theme_minimal() + 
       labs(x = "Species", y = "Probability") +
-      theme(axis.text.x = element_text(family = "Tahoma",
-                                       face = "bold", 
-                                       colour = "white",
-                                       size =15),
-            axis.text.y = element_text(family = "Tahoma",
-                                       face = "bold", 
-                                       colour = "white",
-                                       size =15),
-            axis.title.y = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            axis.title.x = element_text(family = "Tahoma",
-                                        face = "bold", 
-                                        colour = "white",
-                                        size =15),
-            legend.title = element_text(family = "Tahoma",
-                                face = "bold",
-                                colour = "white",
-                                size =15),
-    legend.text = element_text(family = "Tahoma",
-                               face = "bold",
-                               colour = "white",
-                               size =15))
+    theme(text = element_text(colour = "white", family = "Tahoma", face = "bold", size = 15),
+          axis.text.x = element_text(family = "Tahoma",
+                                     face = "bold",
+                                     colour = "white",
+                                     size =15),
+          axis.text.y = element_text(family = "Tahoma",
+                                     face = "bold",
+                                     colour = "white",
+                                     size =15)
+          
+    ) 
+       
 
   },  bg = "transparent")
   # end of predictor server
@@ -385,6 +369,8 @@ server <- function(input, output) {
         columns = c("Metadata", "...2"),
         backgroundColor = "white")
   })
+  
+
   
 }
 
