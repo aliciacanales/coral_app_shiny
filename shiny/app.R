@@ -248,7 +248,7 @@ server <- function(input, output) {
   bomm_reactive <- reactive({   
     message('in bomm_reactive, input$site_coral = ', input$site_coral)  
     site_bom %>% 
-      filter(site == input$site_coral)
+      filter(site %in% input$site_coral)
   }) # end of tab 1
   
   output$coral_plot <- renderPlot({
