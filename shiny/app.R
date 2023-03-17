@@ -212,7 +212,8 @@ ui <- fluidPage(theme = my_theme,
                                                                   textInput(inputId = "width", 
                                                                             label = "Width (mm)"), 
                                                                   'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
-                                                  mainPanel(plotOutput('bar')),
+                                                  mainPanel(h4('Which Species is it?'),
+                                                            plotOutput('bar')))),
                            
                            tabPanel('Site Map',
                                     sidebarLayout(position = 'right',  
@@ -237,8 +238,7 @@ ui <- fluidPage(theme = my_theme,
                                       h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
                                       h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay')
                                     ))
-                           
-                )
+                           ))   
 
 ### Server and reactives
 
