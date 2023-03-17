@@ -19,6 +19,7 @@ library(jtools)
 library(tidyr)
 library(RColorBrewer)
 library(knitr)
+library(DT)
 
 
 ## Reading in data
@@ -149,7 +150,6 @@ coral_fitted <- coral_blr1 %>%
 metadata <- read_csv("coral_metadata.csv")
 
 meta_kable <- knitr::kable(metadata)  
-  
 
 
 my_theme <- bs_theme(
@@ -233,7 +233,7 @@ ui <- fluidPage(theme = my_theme,
                                       h5("**Meta Data Info Here**"),
                                       h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
                                       h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
-                                      meta_kable
+                                      DTOutput('meta')
                                     ))
                            ))   
 
@@ -381,6 +381,10 @@ server <- function(input, output) {
   output$meta <- renderTable({
     site_reactive(metadata)
   })
+  
+  output$meta = renderDT(
+    metadata, options = list(lengthChange = FALSE)
+    )
   
 }
 
