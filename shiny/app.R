@@ -188,8 +188,7 @@ ui <- fluidPage(theme = my_theme,
                                       mainPanel(h4("Coral Distribution on Bommies by Site"),
                                                 plotOutput('coral_plot'),
                                                 plotOutput('coral_pie')
-                                      )
-                                    ) 
+                                      )) 
                            ),
                            tabPanel('Predict Coral Species!',
                                     sidebarLayout(position = 'left', 
@@ -279,13 +278,12 @@ server <- function(input, output) {
                                        face = "bold", 
                                        colour = "white",
                                        size =15
-            ) )
+            ))
     
     
     ## change bomm_reactive() back to site_bom to get all the columns back    
     
   }, bg = "transparent")
-  
   
   output$coral_pie <- renderPlot({
     slices <- c(0, 12.9, 26.4, 34.9, 25.8)
@@ -376,7 +374,6 @@ server <- function(input, output) {
   output$table <- renderTable({
     site_reactive()
   })
-  
   
   output$meta <- renderTable({
     site_reactive(metadata)
