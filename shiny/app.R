@@ -316,10 +316,12 @@ server <- function(input, output) {
 
    output$coral_map <-renderLeaflet({
      content <- paste(sep = "Number of Corals")
+     
+     coralIcon <- coral_icon = makeIcon("coral.png", 18)
     
      leaflet() %>% 
                addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
-               addCircleMarkers(data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
+       addMarkers(icon = coral_icon, data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
                           ("<br>Site Number: ", 
                             htmlEscape(lat_lon_cor$site), 
                             "<br>Number of Corals: ", 
