@@ -1,3 +1,6 @@
+## Tab 1 -- 
+## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
+
 
 library(tidyverse)
 library(shiny)
@@ -235,7 +238,7 @@ ui <- fluidPage(theme = my_theme,
                                       h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay')
                                     ))
                            
-                ))))
+                )
 
 ### Server and reactives
 
