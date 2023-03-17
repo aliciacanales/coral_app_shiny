@@ -47,9 +47,13 @@ counts_na <- coral %>%
   count(site) %>% 
   rename("total_n" = n)
 
+counts_na_ng <- coral %>% 
+  count(site) %>% 
+  rename("total_n" = n)
+
 lat_lon_cor <- coral %>% 
   select(site, lat, long) %>% 
-  merge(counts_na, by = ('site')) %>% 
+  merge(counts_na_ng, by = ('site')) %>% 
   unique()
 
 
@@ -330,17 +334,16 @@ server <- function(input, output) {
    
    output$coral_map <-renderLeaflet({
      content <- paste(sep = "Number of Corals")
+    
      
      leaflet() %>% 
                addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
-               addMarkers(data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
+               addCircleMarkers(data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
                           ("<br>Site Number: ", 
                             htmlEscape(lat_lon_cor$site), 
-                            "<br>Genus: ", 
-                            htmlEscape(lat_lon_cor$genus), 
                             "<br>Number of Corals: ", 
                             htmlEscape(lat_lon_cor$total_n)
-                          ) 
+                          )
                ) 
              
              
