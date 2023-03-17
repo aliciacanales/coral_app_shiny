@@ -190,13 +190,10 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Predict Coral Species!',
                                     sidebarLayout( position = 'left',
                                      sidebarPanel(h4("Enter Values:"),
-                                      textInput(inputId = "site",
-                                       label = "Site Number"),
-                                      textInput(inputId = "length",
-                                       label = "Length"),
-                                      textInput(inputId = "width",
-                                        label = "Width"),
-                                      submitButton("Analyze!"),
+                                      # sliderInput("site", label = h3("Site Number"), min =  ),
+                                      #  label = "Site Number"),
+                                      sliderInput("length", label = h3("Length (mm)"), min = 0, max = 200, value = 58.1), 
+                                     sliderInput("width", label = h3("Width (mm)"), min = 0, max = 200, value = 44.55), 
                                       'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
                            
                                     mainPanel(h4('Which Species is it?'),
@@ -308,9 +305,13 @@ server <- function(input, output) {
 
  ## Start of predictor tab     
 user_df <- reactive({
-  message('in user_df, input$site = ', input$site) 
-  message('in user_df, input$length = ', input$length)
-  message('in user_df, input$width = ', input$width) 
+  # message('in user_df, input$site = ', input$site) 
+  # message('in user_df, input$length = ', input$length)
+  # message('in user_df, input$width = ', input$width) 
+  
+  # renderPlot(input$width)
+  # renderPlot(input$length)
+  
   data.frame(
     site = as.numeric(input$site),
     length = as.numeric(input$length),
