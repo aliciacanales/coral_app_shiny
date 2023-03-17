@@ -229,7 +229,6 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Citation',
                                     mainPanel(
                                       h5("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
-                                      h5("**Meta Data Info Here**"),
                                       h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
                                       h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
                                       DTOutput('meta')
@@ -294,9 +293,10 @@ server <- function(input, output) {
       annotation_scale(
         location = "bl",
         width_hint = 0.2
-      ) + geom_sf(highlight_location(), data = comb_coral2, aes(color = site,
+      ) + geom_sf(data = comb_coral2, aes(color = site,
                                           label = genus,
                                           text = paste("Total Count", n)
+<<<<<<< HEAD
       )) 
    #  +
    #    coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
@@ -318,6 +318,15 @@ server <- function(input, output) {
                addMarkers(~x,~y, popup = ~site, label = ~site)
      )
    })
+=======
+      )) +
+      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
+      guides(col= guide_legend(title= "Location Site")) -> gg_layer
+    
+    
+    gg_layer <- gg_layer +geom_point(data = highlight_location(), color = 'red', size =4)
+   gg_layer
+>>>>>>> f90709734bc81cd3227435c083f157caa395bafc
      
     
   })  # end of map server, end of plotly
@@ -339,7 +348,7 @@ server <- function(input, output) {
     df <- tribble(
       ~ species,     ~ prob,
       'Pocillopora', pred,
-      'Acropora',  1- pred) 
+      'Acropora',  1 - pred) 
     ##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
   ggplot(df, x=1, aes(x = species, y = prob, fill = species)) +
     geom_col() +
@@ -374,13 +383,18 @@ server <- function(input, output) {
     site_reactive()
   })
   
+  
   output$meta <- renderTable({
     site_reactive(metadata)
   })
   
-  output$meta = renderDT(
-    metadata, options = list(lengthChange = FALSE)
-    )
+  output$meta = renderDT({
+    datatable(metadata) %>% 
+      formatStyle(
+        searchHighlight = TRUE,
+        columns = c("Metadata", "...2"),
+        backgroundColor = "white")
+  })
   
 
   
@@ -389,3 +403,5 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
