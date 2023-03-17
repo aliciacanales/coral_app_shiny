@@ -250,7 +250,7 @@ ui <- fluidPage(theme = my_theme,
                                     ))
                            ))   
 
-### Begin rerver and reactives:
+### Begin server and reactive:
 
 server <- function(input, output) {
   
