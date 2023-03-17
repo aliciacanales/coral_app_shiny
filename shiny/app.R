@@ -375,7 +375,7 @@ server <- function(input, output) {
   
   
   output$meta <- renderTable({
-    (metadata)
+    site_reactive(metadata)
   })
   
 }
