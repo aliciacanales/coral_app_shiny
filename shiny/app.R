@@ -24,7 +24,7 @@ library(DT)
 library(htmltools)
 
 
-## Reading in data and and initial wrangling:
+### Reading in data and and initial wrangling:
 coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>% 
   mutate(date = ymd(date)) %>% 
   mutate(site = as.integer(site))
@@ -175,9 +175,14 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('About',
                                     mainPanel(
                                       h1('Overview of the Study'),
+                                      column(
                                       h5("This shiny app showcases the resilience of Moorea's outer reef communities to changing ocean conditions over the past decade, despite the acidic ocean conditions and rising ocean temperatures. The app provides data from coral surveys conducted in the Northshore lagoon in Moorea, where 5 5x5m transects were set up at 16 sites to measure branching (pocillopora and Acropora) corals' lengths and available settlement space in each plot. The app aims to help understand the spatial distribution of coral taxa and size structure to further understand community dynamics and identify areas of efficient out-planting sites and optimal habitat for restoration efforts that are in Moorea. The study suggests that the recovery of outer reef coral communities around Moorea may include an increased capacity to respond to future conditions due to the diversity of coral recruits, at least among pocillopora species."),
+                                      width = 12,
+                                      align = "left"),
+                                      br(),
+                                      br(),
                                       img(src='https://upload.wikimedia.org/wikipedia/commons/3/34/Acropora_globiceps_Maldives.jpg', height = "200px", width = "300px"),
-                                      img(src = "https://media.istockphoto.com/id/1333638431/photo/pocillopora-damicornis-pink-colorful-sps-coral-in-red-sea-underwater-scene.jpg?s=612x612&w=0&k=20&c=2MPGelRPoVE92rs6smWFHFFviGl8dJ_TqkRjQSRNp20=", height = '200px', width = '300px'), 
+                                      img(src = "https://media.istockphoto.com/id/1333638431/photo/pocillopora-damicornis-pink-colorful-sps-coral-in-red-sea-underwater-scene.jpg?s=612x612&w=0&k=20&c=2MPGelRPoVE92rs6smWFHFFviGl8dJ_TqkRjQSRNp20=", height = '200px', width = '300px'),
                                       tags$figcaption("Coral species in the study: Acropora (left) and Pocillopora (right)")
                                     )),
                            tabPanel('Bommie Info',
@@ -188,10 +193,13 @@ ui <- fluidPage(theme = my_theme,
                                                            choices = unique(site_bom$site),
                                                            selected = unique(site_bom$site)
                                                            
-                                        ), 'In this tab, we have created graphics to compare the locations of the coral along bommies. This information will be useful to determine the likelihood of survival during restoration based on their placement. Check multiple sites to compare the survival rates!'
+                                        ), 
+                                        br(),
+                                        'In this tab, we have created graphics to compare the locations of the coral along bommies. This information will be useful to determine the likelihood of survival during restoration based on their placement. Check multiple sites to compare the survival rates!'
                                       ),
                                       mainPanel(h4("Coral Distribution on Bommies by Site"),
                                                 plotOutput('coral_plot'),
+                                                br(),
                                                 plotOutput('coral_pie')
                                       )) 
                            ),
@@ -212,7 +220,8 @@ ui <- fluidPage(theme = my_theme,
                                                                   h6("Enter values between 0 and 150 mm")),
                                                   mainPanel(h4('Which Species is it?'),
                                                             plotOutput('bar'), 
-                                                            
+                                                            br(),
+                                                            br(),
                                                             'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'))),
                            
                            tabPanel('Site Map',
@@ -222,6 +231,7 @@ ui <- fluidPage(theme = my_theme,
                                                                        label = 'Choose Site Number',
                                                                        choices = unique(lat_lon_cor$site),
                                                                        selected = unique(lat_lon_cor$site)),
+                                                    br(),
                                                     "This map shows the sites along the island of Moorea that is part of French Polynesia's Society Islands archipelago. Each point displays the site number and the dominant genus' total number of individuals. These sites are important to examine individually to pinpoint where restoration efforts are most needed."),
                                                   mainPanel(h4('Location Sites along Moorea'),
                                                             leafletOutput('coral_map')))
@@ -234,18 +244,20 @@ ui <- fluidPage(theme = my_theme,
                                                                 choices = unique(sites_renamed$Site))),
                                                   mainPanel(h4("How Dead are We Talkin'?"),
                                                             tableOutput(outputId = 'table'),
+                                                            br(),
                                                             'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
-                           tabPanel('Citation',
+                           tabPanel('Citations & Metadata',
                                     mainPanel(
                                       h4("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
-                                      h5("Data Citation:"),
-                                      h5("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
-                                      h5('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
+                                      h4('This shiny app was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
+                                      br(),
                                       h6("Image Citations:"),
                                       h6("Igor Malakhov. (2021). Pocillopora Damicornis pink colorful SPS coral in Red Sea underwater scene [Photograph]. Retrieved from https://media.istockphoto.com/id/1333638431/photo/pocillopora-damicornis-pink-colorful-sps-coral-in-red-sea-underwater-scene.jpg?s=612x612&w=0&k=20&c=2MPGelRPoVE92rs6smWFHFFviGl8dJ_TqkRjQSRNp20="),
                                       h6("Michael Luenen. (2017). Underwater view of a coral reef with colorful fish [Photograph]. Retrieved from https://images.unsplash.com/photo-1507166763745-bfe008fbb831?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"),
                                       h6("Noa Shenkar. (2014). Acropora globiceps Maldives.jpg [Photograph]. Retrieved from https://upload.wikimedia.org/wikipedia/commons/3/34/Acropora_globiceps_Maldives.jpg"),
-                                      
+                                      br(),
+                                      h6("Data Citation: Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
+                                      h6("Metadata Info:"),
                                       DTOutput('meta')
                                     ))
                            ))   
