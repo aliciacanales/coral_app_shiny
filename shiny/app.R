@@ -193,6 +193,8 @@ ui <- fluidPage(theme = my_theme,
                                                            label = 'Choose Site Number',
                                                            choices = unique(site_bom$site),
                                                            selected = unique(site_bom$site)
+                                                        
+                                                           
                                                            
                                         ), 
                                         br(),
