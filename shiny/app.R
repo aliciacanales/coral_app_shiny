@@ -330,13 +330,14 @@ server <- function(input, output) {
   output$bar <- renderPlot({
     pred <- predict(coral_blr1, user_df(),
                     type = 'response') 
-    color <- c("cyan", "coral")
+    color <- c("#E1FFFF", "#E5E6FB")
     df <- tribble(
       ~ species,     ~ prob,
       'Pocillopora', pred,
       'Acropora',  1- pred) 
     ##Note for Casey: Based on coral fitted & the blr model -- we get the predicted values but it labels it as poc every time even if it's strongly predicting that it is acr
   ggplot(df, x=1, aes(x = species, y = prob, fill = species)) +
+    geom_col() +
       theme_minimal() + 
       labs(x = "Species", y = "Probability") +
       theme(axis.text.x = element_text(family = "Tahoma",
@@ -354,16 +355,16 @@ server <- function(input, output) {
             axis.title.x = element_text(family = "Tahoma",
                                         face = "bold", 
                                         colour = "white",
-                                        size =15), 
-    legend.title = element_text(family = "Tahoma",
-                                face = "bold", 
+                                        size =15),
+            legend.title = element_text(family = "Tahoma",
+                                face = "bold",
                                 colour = "white",
                                 size =15),
     legend.text = element_text(family = "Tahoma",
-                               face = "bold", 
+                               face = "bold",
                                colour = "white",
                                size =15))
-    
+
   },  bg = "transparent")
   # end of predictor server
   
