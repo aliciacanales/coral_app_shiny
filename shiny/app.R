@@ -145,6 +145,8 @@ coral_tidy <- tidy(coral_blr1)
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
+metadata <- read_csv("coral.metadata.csv")
+
 
 my_theme <- bs_theme(
   bg = 'lightblue',
@@ -368,6 +370,10 @@ server <- function(input, output) {
   
   output$table <- renderTable({
     site_reactive()
+  })
+  
+  meta <- renderTable({
+    ()
   })
   
 }
