@@ -1,6 +1,3 @@
-## Tab 1 -- 
-## Tab 4 -- a table output that return info on site using a text input =- number of acr and poc, if its in the garden and the % bleached 
-
 
 library(tidyverse)
 library(shiny)
@@ -179,7 +176,8 @@ ui <- fluidPage(theme = my_theme,
                                                            label = 'Choose Site Number',
                                                            choices = unique(site_bom$site),
                                                            selected = 120
-                                        )
+                                                           
+                                        ), 'In this tab, we have created graphics to compare the locations of the coral along bommies. This information will be useful to determine the likelihood of survival during restoration based on their placement. Check multiple sites to compare the survival rates!'
                                       ),
                                       mainPanel(h4("Coral Distribution on Bommies by Site"),
                                                 plotOutput('coral_plot'),
