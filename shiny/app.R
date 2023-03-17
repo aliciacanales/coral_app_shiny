@@ -145,7 +145,7 @@ coral_tidy <- tidy(coral_blr1)
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
-metadata <- read_csv("coral.metadata.csv")
+metadata <- read_csv("coral_metadata.csv")
 
 
 my_theme <- bs_theme(
@@ -228,7 +228,8 @@ ui <- fluidPage(theme = my_theme,
                                       h5("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
                                       h5("**Meta Data Info Here**"),
                                       h6("Olivia Isbell. 2022. Bren School of Environmental Science and Management. Moorea Coral Reef Data."),
-                                      h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay')
+                                      h6('This website was compiled by Alicia Canales, Danielle Hoekstra and Kat Mackay'),
+                                      tableOutput(outputId = "meta")
                                     ))
                            ))   
 
@@ -372,8 +373,9 @@ server <- function(input, output) {
     site_reactive()
   })
   
-  meta <- renderTable({
-    ()
+  
+  output$meta <- renderTable({
+    (metadata)
   })
   
 }
