@@ -278,26 +278,25 @@ server <- function(input, output) {
   })
   
   # end of coral plot
-  hightlight_location <- reactive({
-    site_data <- subset(comb_coral2, site_number == input$site)
-    location <- list(lat = site_data$lat,
-                     lon = site_data$lon)
-    location
-  })
-  
-  output$map <- renderPlotly({
-    ggplot(data=fp) +
-      geom_sf() +
-      theme_minimal() +
-      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
-      annotation_scale(
-        location = "bl",
-        width_hint = 0.2
-      ) + geom_sf(data = comb_coral2, aes(color = site,
-                                          label = genus,
-                                          text = paste("Total Count", n)
-<<<<<<< HEAD
-      )) 
+  # highlight_location <- reactive({
+  #   site_data <- subset(comb_coral2, site_number == input$site)
+  #   location <- list(lat = site_data$lat,
+  #                    lon = site_data$lon)
+  #   location
+  # })
+  # 
+  # output$map <- renderPlotly({
+  #   ggplot(data=fp) +
+  #     geom_sf() +
+  #     theme_minimal() +
+  #     coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62))+
+  #     annotation_scale(
+  #       location = "bl",
+  #       width_hint = 0.2
+  #     ) + geom_sf(data = comb_coral2, aes(color = site,
+  #                                         label = genus,
+  #                                         text = paste("Total Count", n)
+  #     )) 
    #  +
    #    coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
    #    guides(col= guide_legend(title= "Location Site")) -> gg_layer
@@ -305,7 +304,7 @@ server <- function(input, output) {
    # 
    # gg_layer
   
-   hightlight_location <- reactive({
+   highlight_location <- reactive({
      counts_na %>% 
        filter(site %in% input$location)
    })
@@ -318,18 +317,17 @@ server <- function(input, output) {
                addMarkers(~x,~y, popup = ~site, label = ~site)
      )
    })
-=======
-      )) +
-      coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
-      guides(col= guide_legend(title= "Location Site")) -> gg_layer
+   #    )) +
+   #    coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
+   #    guides(col= guide_legend(title= "Location Site")) -> gg_layer
+   #  
+   #  
+   #  gg_layer <- gg_layer +geom_point(data = highlight_location(), color = 'red', size =4)
+   # gg_layer
+   # 
+   #   
     
-    
-    gg_layer <- gg_layer +geom_point(data = highlight_location(), color = 'red', size =4)
-   gg_layer
->>>>>>> f90709734bc81cd3227435c083f157caa395bafc
-     
-    
-  })  # end of map server, end of plotly
+  # })  # end of map server, end of plotly
   
   ## Start of predictor tab     
   user_df <- reactive({
