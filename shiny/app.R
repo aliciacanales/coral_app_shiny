@@ -251,7 +251,7 @@ ui <- fluidPage(theme = my_theme,
                                                   mainPanel(h4("How Dead are We Talkin'?"),
                                                             tableOutput(outputId = 'table'),
                                                             br(),
-                                                            'In this tab the user can filter the data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each site. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
+                                                            'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
                            tabPanel('Citations & Metadata',
                                     mainPanel(
                                       h4("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
@@ -316,12 +316,10 @@ server <- function(input, output) {
 
    output$coral_map <-renderLeaflet({
      content <- paste(sep = "Number of Corals")
-     
-     coralIcon <- coral_icon = makeIcon("coral.png", 18)
-    
+
      leaflet() %>% 
                addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
-       addMarkers(icon = coral_icon, data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
+               addCircleMarkers(data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
                           ("<br>Site Number: ", 
                             htmlEscape(lat_lon_cor$site), 
                             "<br>Number of Corals: ", 
