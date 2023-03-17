@@ -147,7 +147,7 @@ coral_tidy <- tidy(coral_blr1)
 coral_fitted <- coral_blr1 %>% 
   broom::augment(type.predict = 'response')
 
-metadata <- read_csv("coral_metadata.csv")
+metadata <- read_csv(here("data", "coral_metadata.csv"))
 
 meta_kable <- knitr::kable(metadata)  
 
