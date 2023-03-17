@@ -31,7 +31,8 @@ coral <- readxl::read_excel(here('data', 'coral_data_244_akd.xls')) %>%
 poc_acr <- coral %>%
   filter(genus %in% c('poc', 'acr')) %>% 
   mutate(as.factor(site)) %>% 
-  mutate(genus = fct_drop(genus))
+  mutate(genus = fct_drop(genus)) %>% 
+  rename('site_factor' = 'as.factor(site)')
 
 new_coral <- poc_acr %>% 
   select(site, lat, long, genus) %>% 
@@ -140,9 +141,11 @@ site_bom <- coral %>%
 
 ### Binary Logistic Regression model
 
-f1 <- genus ~ length * width * site
+f1 <- genus ~ length * width * site_factor
+
 coral_blr1 <- glm(formula = f1, data = poc_acr, 
                   family = 'binomial') 
+
 coral_tidy <- tidy(coral_blr1)
 
 coral_fitted <- coral_blr1 %>% 
@@ -313,7 +316,7 @@ user_df <- reactive({
   # renderPlot(input$length)
   
   data.frame(
-    site = as.numeric(input$site),
+    site = input$site_factor,
     length = as.numeric(input$length),
     width = as.numeric(input$width))
   })
