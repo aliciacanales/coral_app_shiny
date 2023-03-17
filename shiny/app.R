@@ -46,6 +46,12 @@ counts_na <- coral %>%
   count(site) %>% 
   rename("total_n" = n)
 
+lat_lon_cor <- coral %>% 
+  select(site, lat, long) %>% 
+  merge(counts_na, by = ('site'))
+
+
+
 garden_counts <- coral %>% 
   select(genus, site, garden) %>%
   mutate(garden = as.factor(garden)) %>%
@@ -213,6 +219,10 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Site Map',
                                     sidebarLayout(position = 'right',  
                                                   sidebarPanel(
+                                                    checkboxGroupInput(inputId = 'location',
+                                                                       label = 'Choose Site Number',
+                                                                       choices = unique(lat_lon_cor$site),
+                                                                       selected = unique(lat_lon_cor$site)),
                                                     "This map shows the sites along the island of Moorea that is part of French Polynesia's Society Islands archipelago. Each point displays the site number and the dominant genus' total number of individuals. These sites are important to examine individually to pinpoint where restoration efforts are most needed."),
                                                   mainPanel(h4('Location Sites along Moorea'),
                                                             leafletOutput('coral_map')))
@@ -305,17 +315,24 @@ server <- function(input, output) {
    # gg_layer
   
    highlight_location <- reactive({
-     counts_na %>% 
+     lat_lon_cor %>% 
        filter(site %in% input$location)
    })
     
+   # output$coral_map <-renderLeaflet({
+   #   leaflet(highlight_location() %>% 
+   #             addProviderTiles(providers$OpenTopoMap) %>% 
+   #             setView(-149.70, -17.42, zoom = 7) %>% 
+   #             addTiles() %>% 
+   #             addMarkers(data = highlight_location())
+   
    output$coral_map <-renderLeaflet({
-     leaflet(data = highlight_location() %>% 
-               addProviderTiles(providers$OpenTopoMap) %>% 
-               setView(lat = c(-149.70,-149.95), lng = c(-17.42,-17.62), zoom = 7) %>% 
-               addTiles() %>% 
-               addMarkers(~x,~y, popup = ~site, label = ~site)
-     )
+     leaflet() %>% 
+               addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
+               addMarkers(data = highlight_location())
+             
+             
+     
    })
    #    )) +
    #    coord_sf(xlim=c(-149.70,-149.95),ylim=c(-17.42,-17.62)) +
