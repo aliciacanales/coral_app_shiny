@@ -141,7 +141,7 @@ site_bom <- coral %>%
 
 ### Binary Logistic Regression model
 
-f1 <- genus ~ length * width * site_factor
+f1 <- genus ~ length * width * site
 
 coral_blr1 <- glm(formula = f1, data = poc_acr, 
                   family = 'binomial') 
@@ -193,10 +193,15 @@ ui <- fluidPage(theme = my_theme,
                            tabPanel('Predict Coral Species!',
                                     sidebarLayout( position = 'left',
                                      sidebarPanel(h4("Enter Values:"),
-                                      # sliderInput("site", label = h3("Site Number"), min =  ),
-                                      #  label = "Site Number"),
-                                      sliderInput("length", label = h3("Length (mm)"), min = 0, max = 200, value = 58.1), 
-                                     sliderInput("width", label = h3("Width (mm)"), min = 0, max = 200, value = 44.55), 
+                                          selectInput(inputId = 'site',
+                                                      label = "Choose Site Number ",
+                                                      choices = unique(coral$site)),
+                                          textInput(inputId = "length",
+                                                    label = "Length"),
+                                          textInput(inputId = "width",
+                                                    label = "Width"),
+                                     #  sliderInput("length", label = h3("Length (mm)"), min = 0, max = 200, value = 58), 
+                                     # sliderInput("width", label = h3("Width (mm)"), min = 0, max = 200, value = 44), 
                                       'This bar plot presents the probability that an undetermined or new Moorea coral is pocillopora or acropora. The user input values are applied to a binomial logistic regression that we have trained using the rest of the coral data set. Based on those values we can predict the likelihood of if the unknown coral is species pocillopora or acropora.'),
                            
                                     mainPanel(h4('Which Species is it?'),
@@ -316,7 +321,7 @@ user_df <- reactive({
   # renderPlot(input$length)
   
   data.frame(
-    site = input$site_factor,
+    site = as.numeric(input$site),
     length = as.numeric(input$length),
     width = as.numeric(input$width))
   })
