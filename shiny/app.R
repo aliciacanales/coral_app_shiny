@@ -52,7 +52,7 @@ counts_na_ng <- coral %>%
   count(site) %>% 
   rename("total_n" = n)
 
-gc <- garden_counts %>% 
+gc <- counts %>% 
   select(site, genus, n)
 
 dead_counts <- coral %>%
