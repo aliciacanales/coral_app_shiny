@@ -177,7 +177,7 @@ ui <- fluidPage(theme = my_theme,
                                     mainPanel(
                                       h1('Overview of the Study'),
                                       column(
-                                      h5("This shiny app showcases the resilience of Moorea's outer reef communities to changing ocean conditions over the past decade, despite the acidic ocean conditions and rising ocean temperatures. The app provides data from coral surveys conducted in the Northshore lagoon in Moorea, where 5 5x5m transects were set up at 16 sites to measure branching (pocillopora and Acropora) corals' lengths and available settlement space in each plot. The app aims to help understand the spatial distribution of coral taxa and size structure to further understand community dynamics and identify areas of efficient out-planting sites and optimal habitat for restoration efforts that are in Moorea. The study suggests that the recovery of outer reef coral communities around Moorea may include an increased capacity to respond to future conditions due to the diversity of coral recruits, at least among pocillopora species."),
+                                      h5("This shiny app showcases the resilience of Moorea's outer reef communities to changing ocean conditions over the past decade, despite the acidic ocean conditions and rising ocean temperatures. The app provides data from coral surveys conducted in the Northshore lagoon in Moorea, where 5 5x5m transects were set up at 17 sites to measure branching (pocillopora and Acropora) corals' lengths and available settlement space in each plot. The app aims to help understand the spatial distribution of coral taxa and size structure to further understand community dynamics and identify areas of efficient out-planting sites and optimal habitat for restoration efforts that are in Moorea. The study suggests that the recovery of outer reef coral communities around Moorea may include an increased capacity to respond to future conditions due to the diversity of coral recruits, at least among pocillopora species."),
                                       width = 12,
                                       align = "left"),
                                       br(),
@@ -217,13 +217,13 @@ ui <- fluidPage(theme = my_theme,
                                                                             value = 120),
                                                                h6("Example: 120, 124, 131, etc."),
                                                                   textInput(inputId = "length",
-                                                                            label = h5("Length (mm)"),
+                                                                            label = h5("Length (cm)"),
                                                                             value = 9.9),
-                                                                  h6("Enter values between 0 and 150 mm"),
+                                                                  h6("Enter values between 0 and 150 cm"),
                                                                   textInput(inputId = "width", 
-                                                                            label = h5("Width (mm)"),
+                                                                            label = h5("Width (cm)"),
                                                                             value = 12.1),
-                                                                  h6("Enter values between 0 and 150 mm")),
+                                                                  h6("Enter values between 0 and 150 cm")),
                                                   mainPanel(h4('Which Species is it?'),
                                                             plotOutput('bar'), 
                                                             br(),
@@ -251,7 +251,7 @@ ui <- fluidPage(theme = my_theme,
                                                   mainPanel(h4("How Dead are We Talkin'?"),
                                                             tableOutput(outputId = 'table'),
                                                             br(),
-                                                            'In this tab the user can filter the data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each site. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
+                                                            'The user of this tab can filter a data table by the site to display the total number of observations of each species of coral, the number of species cataloged in the garden, and the average percent perished across each species. With this information, one can isolate individual sites and assess high-priority sites for restoration efforts as well which species of coral are at risk site specifically. Moorea and the neighborring Tahitian Islands are home to more than 1,000 species of fish, the most colorful can be found in the coral gardens and lagoons of the coral reefs surrounding the islands. Therefore it is important to protect this beautiful habitat.'))),
                            tabPanel('Citations & Metadata',
                                     mainPanel(
                                       h4("PhD candidate, Olivia Isbell, collected this data from Moorea from July 1st, 2022 until August 26th, 2022."),
@@ -316,7 +316,7 @@ server <- function(input, output) {
 
    output$coral_map <-renderLeaflet({
      content <- paste(sep = "Number of Corals")
-    
+
      leaflet() %>% 
                addProviderTiles(providers$OpenStreetMap.Mapnik) %>% 
                addCircleMarkers(data = highlight_location(), ~long, ~lat, label = ~htmlEscape(site), popup = paste
